@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery | College Admin</title><link rel="stylesheet" href="css/admin.css"></head>
+<body><script src="js/config.js"></script>
+<script src="js/admin.js"></script><script>
+let items=[];
+document.addEventListener('DOMContentLoaded',async()=>{
+  buildLayout('Gallery',`
+    <div class="page-header"><h2>Photo Gallery</h2><button onclick="openAdd()" class="topbar-btn btn-primary">+ Add Photos</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">All Gallery Images</span>
+    <select class="form-control" id="catFilter" onchange="filter()" style="width:130px;"><option value="">All</option><option value="campus">Campus</option><option value="events">Events</option><option value="sports">Sports</option><option value="labs">Labs</option><option value="cultural">Cultural</option><option value="general">General</option></select></div>
+    <div id="galleryGrid" style="padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;"></div></div>`);
+  await load();
+});
+async function load(){const r=await adminAPI('/admin/gallery');items=r?.data||[];render(items);}
+function render(list){document.getElementById('galleryGrid').innerHTML=list.length?list.map(g=>`
+  <div style="position:relative;border-radius:8px;overflow:hidden;background:var(--gray-100);aspect-ratio:1;">
+    <img src="http://localhost:3000${g.image_url}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
+    <div style="position:absolute;top:4px;right:4px;display:flex;gap:4px;">
+      <span style="background:rgba(12,27,51,0.8);color:var(--gold);font-size:9px;padding:2px 6px;border-radius:4px;">${g.category}</span>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);padding:6px 8px;display:flex;align-items:center;justify-content:space-between;">
+      <span style="color:white;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${g.title||'Photo'}</span>
+      <button onclick="del(${g.id})" style="background:var(--red);color:white;border:none;border-radius:4px;padding:2px 6px;cursor:pointer;font-size:10px;">🗑</button>
+    </div>
+  </div>`).join(''):'<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--gray-400);">No gallery images yet.</div>';}
+function filter(){const c=document.getElementById('catFilter').value;render(c?items.filter(g=>g.category===c):items);}
+function openAdd(){openModal('Add Gallery Images',`<div class="form-grid">
+  <div class="form-group"><label class="form-label">Category</label>
+    <select class="form-control" id="gCat"><option value="general">General</option><option value="campus">Campus</option><option value="events">Events</option><option value="sports">Sports</option><option value="labs">Labs</option><option value="cultural">Cultural</option></select></div>
+  <div class="form-group"><label class="form-label">Title (optional)</label><input class="form-control" id="gTitle" placeholder="Photo title"></div>
+  <div class="form-group form-full"><label class="form-label">Image URL *</label><input class="form-control" id="gImg" placeholder="/uploads/photo.jpg" required>
+  <small style="color:var(--gray-400);font-size:11px;">Add one image at a time. Repeat to add more.</small></div>
+</div>`,async()=>{
+  const d={category:document.getElementById('gCat').value,title:document.getElementById('gTitle').value,image_url:document.getElementById('gImg').value};
+  if(!d.image_url){toast('Image URL required','error');return;}
+  const r=await adminAPI('/admin/gallery',{method:'POST',body:JSON.stringify({...d,images:[d.image_url]})});
+  if(r?.success){toast('Photo added!','success');closeModal();await load();}else toast('Failed','error');
+},'Add Photo');}
+async function del(id){if(!await confirm('Delete this photo?'))return;const r=await adminAPI(`/admin/gallery/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted','success');await load();}else toast('Failed','error');}
+</script></body></html>

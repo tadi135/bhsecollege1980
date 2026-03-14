@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sliders | College Admin</title><link rel="stylesheet" href="css/admin.css"></head>
+<body><script src="js/config.js"></script>
+<script src="js/admin.js"></script><script>
+let items=[];
+document.addEventListener('DOMContentLoaded',async()=>{
+  buildLayout('Hero Sliders',`
+    <div class="page-header"><h2>Manage Hero Sliders</h2><button onclick="openAdd()" class="topbar-btn btn-primary">+ Add Slider</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">All Sliders (drag to reorder)</span></div>
+    <div class="table-wrap"><table><thead><tr><th>Preview</th><th>Title</th><th>Subtitle</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody id="tbl"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--gray-400);">Loading...</td></tr></tbody></table></div></div>`);
+  await load();
+});
+async function load(){const r=await adminAPI('/admin/sliders');items=r?.data||[];render();}
+function render(){
+  document.getElementById('tbl').innerHTML=items.length?items.map(s=>`<tr>
+    <td>${s.image_url?`<img src="http://localhost:3000${s.image_url}" class="img-preview">`:'<span style="color:var(--gray-400);font-size:1.5rem;">🖼</span>'}</td>
+    <td><div style="font-weight:600;">${s.title||'-'}</div></td>
+    <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.subtitle||'-'}</td>
+    <td><input type="number" value="${s.order_index}" onchange="updateOrder(${s.id},this.value)" style="width:60px;" class="form-control"></td>
+    <td><label class="switch"><input type="checkbox" ${s.active?'checked':''} onchange="toggleActive(${s.id},this.checked)"><span class="slider-track"></span></label></td>
+    <td><div class="td-actions"><button class="btn-edit" onclick="openEdit(${s.id})">✏️ Edit</button><button class="btn-del" onclick="del(${s.id})">🗑 Del</button></div></td>
+  </tr>`).join(''):'<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--gray-400);">No sliders yet.</td></tr>';}
+function form(s={}){return`<div class="form-grid">
+  <div class="form-group form-full"><label class="form-label">Slide Title</label><input class="form-control" id="sTitle" value="${s.title||''}" placeholder="Welcome to Our College"></div>
+  <div class="form-group form-full"><label class="form-label">Subtitle</label><input class="form-control" id="sSub" value="${s.subtitle||''}" placeholder="Empowering Students Since 1995"></div>
+  <div class="form-group form-full"><label class="form-label">Image URL *</label><input class="form-control" id="sImg" value="${s.image_url||''}" placeholder="/uploads/slider1.jpg" required><small style="color:var(--gray-400);font-size:11px;">Upload image via server or paste URL</small></div>
+  <div class="form-group"><label class="form-label">Link (optional)</label><input class="form-control" id="sLink" value="${s.link||''}" placeholder="/admissions.html"></div>
+  <div class="form-group"><label class="form-label">Order Index</label><input type="number" class="form-control" id="sOrder" value="${s.order_index||0}"></div>
+</div>`;}
+function openAdd(){openModal('Add Slider',form(),async()=>{
+  const d={title:document.getElementById('sTitle').value,subtitle:document.getElementById('sSub').value,image_url:document.getElementById('sImg').value,link:document.getElementById('sLink').value,order_index:document.getElementById('sOrder').value};
+  if(!d.image_url){toast('Image URL required','error');return;}
+  const r=await adminAPI('/admin/sliders',{method:'POST',body:JSON.stringify(d)});
+  if(r?.success){toast('Slider added!','success');closeModal();await load();}else toast('Failed','error');
+},'Add Slider');}
+function openEdit(id){const s=items.find(x=>x.id===id);if(!s)return;
+openModal('Edit Slider',form(s),async()=>{
+  const d={title:document.getElementById('sTitle').value,subtitle:document.getElementById('sSub').value,image_url:document.getElementById('sImg').value,link:document.getElementById('sLink').value,order_index:document.getElementById('sOrder').value};
+  const r=await adminAPI(`/admin/sliders/${id}`,{method:'PUT',body:JSON.stringify(d)});
+  if(r?.success){toast('Slider updated!','success');closeModal();await load();}else toast('Failed','error');
+},'Save');}
+async function toggleActive(id,v){await adminAPI(`/admin/sliders/${id}`,{method:'PUT',body:JSON.stringify({active:v?1:0})});toast(v?'Active':'Hidden','success');}
+async function updateOrder(id,v){await adminAPI(`/admin/sliders/${id}`,{method:'PUT',body:JSON.stringify({order_index:parseInt(v)})});}
+async function del(id){if(!await confirm('Delete this slider?'))return;const r=await adminAPI(`/admin/sliders/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted','success');await load();}else toast('Failed','error');}
+</script></body></html>

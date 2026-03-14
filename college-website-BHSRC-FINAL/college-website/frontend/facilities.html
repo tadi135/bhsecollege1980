@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facilities | BHSRC Degree & Junior College</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <section class="breadcrumb-section"><div class="container">
+    <h1>Facilities</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><span>Facilities</span></div>
+  </div></section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Infrastructure</div>
+        <h2 class="section-title">World-Class <span>Facilities</span></h2>
+        <div class="divider"></div>
+        <p class="section-sub">Our campus is equipped with state-of-the-art infrastructure to support holistic development.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Library -->
+  <section class="section section-sm" style="background:var(--gray-50);" id="library">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-content fade-in">
+          <div class="section-tag">Knowledge Hub</div>
+          <h2 class="section-title">Central <span>Library</span></h2>
+          <p>Our central library is a treasure trove of knowledge with over 50,000 books, academic journals, newspapers, and digital resources. Equipped with a comfortable reading room, the library is open from 8 AM to 6 PM on all working days.</p>
+          <div class="feature-list" style="margin-top:16px;">
+            <div class="feature-item"><span class="icon">📚</span> 50,000+ Books & Reference Materials</div>
+            <div class="feature-item"><span class="icon">💻</span> Digital Resources & E-Library Access</div>
+            <div class="feature-item"><span class="icon">📰</span> 30+ Newspapers & Magazines</div>
+            <div class="feature-item"><span class="icon">🕐</span> 8:00 AM – 6:00 PM Working Hours</div>
+          </div>
+        </div>
+        <div class="about-img-wrap fade-in">
+          <div style="background:linear-gradient(135deg,var(--navy),var(--navy-light)); border-radius:var(--radius-lg); height:320px; display:flex; align-items:center; justify-content:center; font-size:8rem; color:var(--gold);">📚</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Labs -->
+  <section class="section" id="labs">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Science & Technology</div>
+        <h2 class="section-title">Modern <span>Laboratories</span></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="grid-3">
+        ${[
+          {icon:'🔬',title:'Biology Laboratory', desc:'Equipped with advanced microscopes, specimens, and dissection tools for practical learning.'},
+          {icon:'⚗️',title:'Chemistry Laboratory', desc:'Well-stocked with chemicals, safety equipment, and modern analytical instruments.'},
+          {icon:'⚡',title:'Physics Laboratory', desc:'Instruments for experiments in mechanics, optics, electricity, and electronics.'},
+          {icon:'💻',title:'Computer Laboratory', desc:'300+ computers with latest processors, high-speed internet, and modern software suites.'},
+          {icon:'🧬',title:'Research Lab', desc:'Dedicated research space for final year students and advanced projects.'},
+          {icon:'📡',title:'Language Lab', desc:'Digital language lab for communication skills and spoken English development.'},
+        ].map(l=>`
+          <div style="background:var(--white); border-radius:var(--radius-lg); padding:28px; box-shadow:var(--shadow-md); border-top:4px solid var(--navy); text-align:center; transition:var(--transition);"
+            onmouseenter="this.style.borderTopColor='var(--gold)'; this.style.transform='translateY(-4px)';"
+            onmouseleave="this.style.borderTopColor='var(--navy)'; this.style.transform='none';">
+            <div style="font-size:3rem; margin-bottom:16px;">${l.icon}</div>
+            <h3 style="font-family:var(--font-serif); color:var(--navy); margin-bottom:10px;">${l.title}</h3>
+            <p style="font-size:13px; color:var(--gray-500); line-height:1.6;">${l.desc}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sports -->
+  <section class="section" style="background:var(--navy);" id="sports">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" style="background:rgba(200,150,12,0.15);color:var(--gold-light);">Health & Fitness</div>
+        <h2 class="section-title" style="color:white;">Sports & <span>Recreation</span></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="grid-4">
+        ${['🏏 Cricket Ground','🏀 Basketball Court','🏸 Badminton Courts','⚽ Football Ground','🏐 Volleyball Court','🏋️ Gymnasium','🤸 Indoor Games','🏊 Swimming Pool*'].map(s=>`
+          <div style="background:rgba(255,255,255,0.07); border-radius:var(--radius-lg); padding:20px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
+            <div style="font-size:1.8rem; margin-bottom:8px;">${s.split(' ')[0]}</div>
+            <div style="color:rgba(255,255,255,0.85); font-size:13px; font-weight:500;">${s.substring(s.indexOf(' ')+1)}</div>
+          </div>
+        `).join('')}
+      </div>
+      <p style="text-align:center; color:rgba(255,255,255,0.4); font-size:12px; margin-top:20px;">* Under construction</p>
+    </div>
+  </section>
+
+  <!-- Transport & Hostel -->
+  <section class="section" id="transport">
+    <div class="container">
+      <div class="grid-2" style="gap:32px;">
+        <div style="background:var(--white); border-radius:var(--radius-lg); padding:36px; box-shadow:var(--shadow-lg); border-top:4px solid var(--gold);">
+          <div style="font-size:3rem; margin-bottom:16px;">🚌</div>
+          <h3 style="font-family:var(--font-display); color:var(--navy); margin-bottom:12px;">Transport Service</h3>
+          <p style="color:var(--gray-700); line-height:1.8;">We operate a fleet of 30+ buses covering major areas of the city, ensuring safe and comfortable transportation for students and staff.</p>
+          <div class="feature-list" style="margin-top:16px;">
+            <div class="feature-item"><span class="icon">✓</span> 30+ AC & Non-AC Buses</div>
+            <div class="feature-item"><span class="icon">✓</span> GPS-tracked vehicles</div>
+            <div class="feature-item"><span class="icon">✓</span> Covers all major city routes</div>
+            <div class="feature-item"><span class="icon">✓</span> Experienced & licensed drivers</div>
+          </div>
+        </div>
+        <div style="background:var(--white); border-radius:var(--radius-lg); padding:36px; box-shadow:var(--shadow-lg); border-top:4px solid var(--navy);" id="hostel">
+          <div style="font-size:3rem; margin-bottom:16px;">🏠</div>
+          <h3 style="font-family:var(--font-display); color:var(--navy); margin-bottom:12px;">Hostel Facility</h3>
+          <p style="color:var(--gray-700); line-height:1.8;">Separate, secure, and well-maintained hostels for boys and girls with all necessary amenities for a comfortable stay.</p>
+          <div class="feature-list" style="margin-top:16px;">
+            <div class="feature-item"><span class="icon">✓</span> Separate Boys & Girls Hostels</div>
+            <div class="feature-item"><span class="icon">✓</span> 24/7 Security & CCTV</div>
+            <div class="feature-item"><span class="icon">✓</span> Nutritious Mess Facility</div>
+            <div class="feature-item"><span class="icon">✓</span> Wi-Fi & Study Rooms</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    async function pageInit() { initScrollAnimation(); }
+  </script>
+</body>
+</html>

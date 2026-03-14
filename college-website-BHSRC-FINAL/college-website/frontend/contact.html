@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact BHSRC College - address, phone, email, and Google Maps location.">
+  <title>Contact Us | BHSRC Degree & Junior College</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <section class="breadcrumb-section"><div class="container">
+    <h1>Contact Us</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><span>Contact Us</span></div>
+  </div></section>
+
+  <section class="section">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="section-tag">Get In Touch</div>
+          <h2 class="section-title" style="margin-bottom:24px;">We'd Love to <span>Hear</span> From You</h2>
+          <div class="info-item"><div class="info-icon">📍</div><div><div class="info-label">Address</div><div class="info-value" id="cAddress">123 Education Street, Knowledge Nagar, Hyderabad - 500001, Telangana</div></div></div>
+          <div class="info-item"><div class="info-icon">📞</div><div><div class="info-label">Phone Numbers</div><div class="info-value"><span id="cPhone1">+91 98765 43210</span><br><span id="cPhone2">+91 40-2345-6789</span></div></div></div>
+          <div class="info-item"><div class="info-icon">✉️</div><div><div class="info-label">Email Addresses</div><div class="info-value"><span id="cEmail1">info@college.edu.in</span><br><span id="cEmail2">admissions@college.edu.in</span></div></div></div>
+          <div class="info-item"><div class="info-icon">🕐</div><div><div class="info-label">Office Hours</div><div class="info-value">Monday – Saturday: 9:00 AM – 5:00 PM<br>Sunday: Closed</div></div></div>
+          <div style="margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;">
+            <a href="admissions.html" class="btn btn-primary">Apply Now</a>
+            <a id="waLink" href="#" class="btn btn-navy" target="_blank">💬 WhatsApp Us</a>
+          </div>
+        </div>
+        <div>
+          <div class="map-wrap" style="margin-bottom:28px;">
+            <iframe id="mapFrame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.8!2d78.4867!3d17.3850!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z!5e0!3m2!1sen!2sin" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+          <div style="background:var(--white); border-radius:var(--radius-lg); padding:28px; box-shadow:var(--shadow-md);">
+            <h3 style="font-family:var(--font-display); color:var(--navy); margin-bottom:20px; font-size:1.1rem;">Send Us a Message</h3>
+            <form id="contactForm" onsubmit="submitContact(event)">
+              <div class="form-group"><label class="form-label">Your Name *</label><input type="text" class="form-control" name="name" required placeholder="Full Name"></div>
+              <div class="grid-2" style="gap:12px;">
+                <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-control" name="phone" placeholder="+91 XXXXX XXXXX"></div>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" name="email" placeholder="your@email.com"></div>
+              </div>
+              <div class="form-group"><label class="form-label">Subject</label><input type="text" class="form-control" name="subject" placeholder="Your subject..."></div>
+              <div class="form-group"><label class="form-label">Message *</label><textarea class="form-control" name="message" rows="4" required placeholder="Your message..."></textarea></div>
+              <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Send Message →</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    async function submitContact(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form));
+      const btn = form.querySelector('button[type=submit]');
+      btn.textContent = 'Sending...'; btn.disabled = true;
+      const res = await apiFetch('/enquiry', { method:'POST', body: JSON.stringify(data) });
+      if (res.success) { showToast('Message sent! We will respond within 24 hours.', 'success'); form.reset(); }
+      else showToast('Failed to send. Please call us directly.', 'error');
+      btn.textContent = 'Send Message →'; btn.disabled = false;
+    }
+    async function pageInit() {
+      const info = await getCollegeInfo();
+      if (info.address) document.getElementById('cAddress').textContent = info.address;
+      if (info.phone1) document.getElementById('cPhone1').textContent = info.phone1;
+      if (info.phone2) document.getElementById('cPhone2').textContent = info.phone2;
+      if (info.email1) document.getElementById('cEmail1').textContent = info.email1;
+      if (info.email2) document.getElementById('cEmail2').textContent = info.email2;
+      if (info.map_embed) document.getElementById('mapFrame').src = info.map_embed;
+      if (info.phone1) document.getElementById('waLink').href = `https://wa.me/${info.phone1.replace(/\D/g,'')}`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News & Events | College Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <script src="js/config.js"></script>
+<script src="js/admin.js"></script>
+  <script>
+    let newsList = [];
+    document.addEventListener('DOMContentLoaded', async () => {
+      buildLayout('News & Events', `
+        <div class="page-header">
+          <h2>Manage News & Events</h2>
+          <button onclick="openAddNews()" class="topbar-btn btn-primary">+ Add News/Event</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">All News & Events</span>
+            <div class="toolbar" style="margin:0;">
+              <div class="search-input-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="form-control" id="newsSearch" placeholder="Search news..." oninput="filterNews()" style="padding-left:32px;width:220px;">
+              </div>
+              <select class="form-control" id="catFilter" onchange="filterNews()" style="width:130px;">
+                <option value="">All Categories</option>
+                <option value="news">News</option>
+                <option value="event">Events</option>
+                <option value="placement">Placement</option>
+                <option value="sports">Sports</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Title</th><th>Category</th><th>Event Date</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+            <tbody id="newsTable"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--gray-400);">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      `);
+      await loadNews();
+    });
+
+    async function loadNews() {
+      const res = await adminAPI('/admin/news');
+      newsList = res?.data || [];
+      renderNews(newsList);
+    }
+
+    function renderNews(list) {
+      document.getElementById('newsTable').innerHTML = list.length ? list.map(n => `
+        <tr>
+          <td style="max-width:280px;">
+            <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n.title}</div>
+            <div style="font-size:11px;color:var(--gray-400);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${(n.content||'').substring(0,60)}...</div>
+          </td>
+          <td><span class="badge badge-blue">${n.category}</span></td>
+          <td style="font-size:12px;">${fmtDate(n.event_date)}</td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" ${n.active?'checked':''} onchange="toggleNews(${n.id},this.checked)">
+              <span class="slider-track"></span>
+            </label>
+          </td>
+          <td style="font-size:12px;">${fmtDate(n.created_at)}</td>
+          <td>
+            <div class="td-actions">
+              <button class="btn-edit" onclick="openEditNews(${n.id})">✏️ Edit</button>
+              <button class="btn-del" onclick="deleteNews(${n.id})">🗑 Del</button>
+            </div>
+          </td>
+        </tr>
+      `).join('') : '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--gray-400);">No news found. Click "+ Add" to create one.</td></tr>';
+    }
+
+    function filterNews() {
+      const q = document.getElementById('newsSearch').value.toLowerCase();
+      const cat = document.getElementById('catFilter').value;
+      renderNews(newsList.filter(n => (!q || n.title.toLowerCase().includes(q)) && (!cat || n.category === cat)));
+    }
+
+    function getFormHtml(n = {}) {
+      return `
+        <div class="form-grid">
+          <div class="form-group form-full"><label class="form-label">Title *</label><input type="text" class="form-control" id="nTitle" value="${n.title||''}" required placeholder="News/Event title..."></div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-control" id="nCat">
+              <option value="news" ${n.category==='news'?'selected':''}>News</option>
+              <option value="event" ${n.category==='event'?'selected':''}>Event</option>
+              <option value="placement" ${n.category==='placement'?'selected':''}>Placement</option>
+              <option value="sports" ${n.category==='sports'?'selected':''}>Sports</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Event Date</label><input type="date" class="form-control" id="nDate" value="${n.event_date||''}"></div>
+          <div class="form-group form-full"><label class="form-label">Content</label><textarea class="form-control" id="nContent" rows="5" placeholder="News content...">${n.content||''}</textarea></div>
+          <div class="form-group form-full"><label class="form-label">Image URL (optional)</label><input type="text" class="form-control" id="nImg" value="${n.image_url||''}" placeholder="/uploads/image.jpg"></div>
+        </div>
+      `;
+    }
+
+    function openAddNews() {
+      openModal('Add News / Event', getFormHtml(), async () => {
+        const data = { title: document.getElementById('nTitle').value, category: document.getElementById('nCat').value, event_date: document.getElementById('nDate').value, content: document.getElementById('nContent').value, image_url: document.getElementById('nImg').value };
+        if (!data.title) { toast('Title is required', 'error'); return; }
+        const res = await adminAPI('/admin/news', { method: 'POST', body: JSON.stringify(data) });
+        if (res?.success) { toast('News added!', 'success'); closeModal(); await loadNews(); }
+        else toast('Failed to add', 'error');
+      }, 'Add News');
+    }
+
+    function openEditNews(id) {
+      const n = newsList.find(x => x.id === id);
+      if (!n) return;
+      openModal('Edit News / Event', getFormHtml(n), async () => {
+        const data = { title: document.getElementById('nTitle').value, category: document.getElementById('nCat').value, event_date: document.getElementById('nDate').value, content: document.getElementById('nContent').value, image_url: document.getElementById('nImg').value };
+        const res = await adminAPI(`/admin/news/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+        if (res?.success) { toast('News updated!', 'success'); closeModal(); await loadNews(); }
+        else toast('Failed to update', 'error');
+      }, 'Save Changes');
+    }
+
+    async function toggleNews(id, active) {
+      await adminAPI(`/admin/news/${id}`, { method: 'PUT', body: JSON.stringify({ active: active ? 1 : 0 }) });
+      toast(active ? 'News published' : 'News hidden', 'success');
+    }
+
+    async function deleteNews(id) {
+      const ok = await confirm('Delete this news item? This cannot be undone.');
+      if (!ok) return;
+      const res = await adminAPI(`/admin/news/${id}`, { method: 'DELETE' });
+      if (res?.success) { toast('News deleted', 'success'); await loadNews(); }
+      else toast('Failed to delete', 'error');
+    }
+  </script>
+</body>
+</html>

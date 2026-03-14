@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Departments | College Admin</title><link rel="stylesheet" href="css/admin.css"></head>
+<body><script src="js/config.js"></script>
+<script src="js/admin.js"></script><script>
+let items=[];
+document.addEventListener('DOMContentLoaded',async()=>{
+  buildLayout('Departments',`
+    <div class="page-header"><h2>Manage Departments</h2><button onclick="openAdd()" class="topbar-btn btn-primary">+ Add Department</button></div>
+    <div class="card"><div class="table-wrap"><table><thead><tr><th>Department Name</th><th>Type</th><th>HOD</th><th>Intake</th><th>Duration</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody id="tbl"></tbody></table></div></div>`);
+  await load();
+});
+async function load(){const r=await adminAPI('/admin/departments');items=r?.data||[];render();}
+function render(){document.getElementById('tbl').innerHTML=items.length?items.map(d=>`<tr>
+  <td style="font-weight:600;">${d.name}</td>
+  <td><span class="badge ${d.type==='intermediate'?'badge-blue':'badge-yellow'}">${d.type}</span></td>
+  <td>${d.hod||'-'}</td><td>${d.intake||'-'}</td><td>${d.duration||'-'}</td>
+  <td><label class="switch"><input type="checkbox" ${d.active?'checked':''} onchange="toggleActive(${d.id},this.checked)"><span class="slider-track"></span></label></td>
+  <td><div class="td-actions"><button class="btn-edit" onclick="openEdit(${d.id})">✏️</button><button class="btn-del" onclick="del(${d.id})">🗑</button></div></td>
+</tr>`).join(''):'<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--gray-400);">No departments.</td></tr>';}
+function form(d={}){return`<div class="form-grid">
+  <div class="form-group form-full"><label class="form-label">Department Name *</label><input class="form-control" id="dName" value="${d.name||''}" required></div>
+  <div class="form-group"><label class="form-label">Type *</label>
+    <select class="form-control" id="dType"><option value="intermediate" ${d.type==='intermediate'?'selected':''}>Intermediate</option><option value="degree" ${d.type==='degree'?'selected':''}>Degree</option></select></div>
+  <div class="form-group"><label class="form-label">HOD Name</label><input class="form-control" id="dHod" value="${d.hod||''}"></div>
+  <div class="form-group"><label class="form-label">Intake (Seats)</label><input type="number" class="form-control" id="dIntake" value="${d.intake||60}"></div>
+  <div class="form-group"><label class="form-label">Duration</label><input class="form-control" id="dDur" value="${d.duration||''}" placeholder="3 Years"></div>
+  <div class="form-group form-full"><label class="form-label">Description</label><textarea class="form-control" id="dDesc" rows="3">${d.description||''}</textarea></div>
+</div>`;}
+function openAdd(){openModal('Add Department',form(),async()=>{
+  const d={name:document.getElementById('dName').value,type:document.getElementById('dType').value,hod:document.getElementById('dHod').value,intake:document.getElementById('dIntake').value,duration:document.getElementById('dDur').value,description:document.getElementById('dDesc').value};
+  if(!d.name){toast('Name required','error');return;}
+  const r=await adminAPI('/admin/departments',{method:'POST',body:JSON.stringify(d)});
+  if(r?.success){toast('Department added!','success');closeModal();await load();}else toast('Failed','error');
+},'Add');}
+function openEdit(id){const d=items.find(x=>x.id===id);if(!d)return;
+openModal('Edit Department',form(d),async()=>{
+  const data={name:document.getElementById('dName').value,type:document.getElementById('dType').value,hod:document.getElementById('dHod').value,intake:document.getElementById('dIntake').value,duration:document.getElementById('dDur').value,description:document.getElementById('dDesc').value};
+  const r=await adminAPI(`/admin/departments/${id}`,{method:'PUT',body:JSON.stringify(data)});
+  if(r?.success){toast('Updated!','success');closeModal();await load();}else toast('Failed','error');
+},'Save');}
+async function toggleActive(id,v){await adminAPI(`/admin/departments/${id}`,{method:'PUT',body:JSON.stringify({active:v?1:0})});}
+async function del(id){if(!await confirm('Delete department?'))return;const r=await adminAPI(`/admin/departments/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted','success');await load();}else toast('Failed','error');}
+</script></body></html>

@@ -1,0 +1,524 @@
+╔══════════════════════════════════════════════════════════════════╗
+║   BHSRC COLLEGE WEBSITE — COMPLETE DEPLOYMENT GUIDE            ║
+║   Frontend: https://bhsrccollege1980.netlify.app (Netlify)     ║
+║   Backend : https://bhsrc-college-api.onrender.com (Render)    ║
+╚══════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ YOUR WEBSITE DETAILS (READY TO USE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  🌐 Website URL    :  https://bhsrccollege1980.netlify.app
+  🔐 Admin Panel    :  https://bhsrccollege1980.netlify.app/admin/
+  📧 Admin Email    :  admin@bhsrccollege.edu.in
+  🔑 Admin Password :  Bhsrc@1980
+  🏛️ College Name   :  BHSRC Degree & Junior College
+  📅 Established    :  1980
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ WHY TWO SERVICES? (IMPORTANT TO UNDERSTAND)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Netlify hosts only STATIC files (HTML, CSS, JavaScript).
+  It CANNOT run Node.js, databases, or file uploads.
+
+  So your website is split into two parts:
+
+  ┌─────────────────────────────────────────────────────────────┐
+  │  NETLIFY (FREE)                                             │
+  │  → All HTML pages (index, about, contact, etc.)            │
+  │  → Admin panel (login, dashboard, all admin pages)         │
+  │  → CSS and JavaScript files                                │
+  │  → URL: bhsrccollege1980.netlify.app                       │
+  ├─────────────────────────────────────────────────────────────┤
+  │  RENDER.COM (FREE)                                         │
+  │  → Node.js backend server                                  │
+  │  → Database (stores college info, news, placements, etc.)  │
+  │  → File uploads (staff photos, gallery images, logos)      │
+  │  → OTP email sending                                       │
+  │  → URL: bhsrc-college-api.onrender.com                     │
+  └─────────────────────────────────────────────────────────────┘
+
+  They work together automatically — the frontend calls the
+  backend API whenever it needs data.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ TOTAL COST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Netlify Frontend Hosting  :  FREE (forever)
+  Render.com Backend API    :  FREE (750 hours/month free)
+  SSL Certificate (HTTPS)   :  FREE (both auto-provide it)
+  Netlify Domain            :  FREE (.netlify.app subdomain)
+  ──────────────────────────────────────────────────────────────
+  TOTAL                     :  ₹0 / FREE to start!
+
+  Optional upgrades later:
+  → Custom domain (yourcollegename.in from GoDaddy) : ₹800/year
+  → Render paid plan (no sleep, persistent storage) : $7/month
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ OVERVIEW OF ALL STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  PART A — DEPLOY BACKEND ON RENDER.COM (do this first)
+  ──────────────────────────────────────────────────────
+  Step 1  →  Create a GitHub account (free)
+  Step 2  →  Upload project code to GitHub
+  Step 3  →  Create Render.com account (free)
+  Step 4  →  Connect Render to GitHub and deploy backend
+  Step 5  →  Set environment variables on Render
+  Step 6  →  Copy your Render backend URL
+  Step 7  →  Update config.js with your Render URL
+
+  PART B — DEPLOY FRONTEND ON NETLIFY (do this second)
+  ──────────────────────────────────────────────────────
+  Step 8  →  Create Netlify account (free)
+  Step 9  →  Deploy frontend to Netlify
+  Step 10 →  Verify your site is live
+
+  PART C — GMAIL OTP SETUP
+  ──────────────────────────────────────────────────────
+  Step 11 →  Set up Gmail App Password for OTP emails
+  Step 12 →  Add Gmail credentials to Render
+
+  PART D — TEST EVERYTHING
+  ──────────────────────────────────────────────────────
+  Step 13 →  Test all pages and admin login
+
+══════════════════════════════════════════════════════════════════
+PART A — DEPLOY BACKEND ON RENDER.COM
+══════════════════════════════════════════════════════════════════
+
+━━━ STEP 1 — CREATE A GITHUB ACCOUNT ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+GitHub is where you store your code online so Render can read it.
+
+1. Go to:  https://github.com
+2. Click "Sign up"
+3. Enter your email, create a password, choose a username
+   Example username:  bhsrccollege
+4. Verify email → complete signup
+5. You now have a free GitHub account
+
+━━━ STEP 2 — UPLOAD PROJECT TO GITHUB ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+METHOD A — Using GitHub Desktop App (Easiest for beginners)
+
+1. Download GitHub Desktop: https://desktop.github.com
+   Install it → Sign in with your GitHub account
+
+2. In GitHub Desktop:
+   → Click "File" → "New Repository"
+   → Name: bhsrc-college-website
+   → Local Path: click "Choose..." → select your college-website folder
+   → Click "Create Repository"
+
+3. Click "Publish repository" (top right)
+   → Uncheck "Keep this code private" if you want it public
+   → Click "Publish Repository"
+
+4. Your code is now on GitHub at:
+   https://github.com/bhsrccollege/bhsrc-college-website
+
+METHOD B — Upload directly on GitHub website
+
+1. Go to https://github.com → Click "+" → "New repository"
+2. Name: bhsrc-college-website → Click "Create repository"
+3. On the next page, click "uploading an existing file"
+4. Drag your entire college-website folder into the upload area
+5. Click "Commit changes"
+
+━━━ STEP 3 — CREATE RENDER.COM ACCOUNT ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to:  https://render.com
+2. Click "Get Started for Free"
+3. Sign up using your GitHub account (click "Continue with GitHub")
+   → This connects Render to GitHub automatically
+4. Authorize Render to access your GitHub → Click "Authorize"
+5. You are now logged into Render dashboard
+
+━━━ STEP 4 — DEPLOY BACKEND ON RENDER ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. In Render dashboard → Click "New +" → Select "Web Service"
+
+2. You see a list of your GitHub repos
+   → Find "bhsrc-college-website" → Click "Connect"
+
+3. Fill in the deployment settings:
+
+   ┌──────────────────────────────────────────────────────────┐
+   │  Name          :  bhsrc-college-api                      │
+   │  Region        :  Singapore  (closest to India)          │
+   │  Branch        :  main                                   │
+   │  Root Directory:  backend                                │
+   │  Runtime       :  Node                                   │
+   │  Build Command :  npm install                            │
+   │  Start Command :  node server.js                         │
+   │  Instance Type :  Free                                   │
+   └──────────────────────────────────────────────────────────┘
+
+4. Scroll down to "Advanced" → Click "Add Disk"
+   ┌──────────────────────────────────────────────────────────┐
+   │  Name       :  uploads-storage                           │
+   │  Mount Path :  /opt/render/project/src/uploads           │
+   │  Size       :  1 GB  (free tier max)                     │
+   └──────────────────────────────────────────────────────────┘
+   ⚠️ This disk stores your uploaded images. 
+   ⚠️ Free tier gives 1 GB. For more, upgrade to $7/month plan.
+
+5. Click "Create Web Service"
+
+6. Render will now build and deploy your backend.
+   This takes 3–5 minutes.
+   Watch the logs at the bottom — wait for:
+   "🎓 BHSRC College API Running!"
+
+━━━ STEP 5 — SET ENVIRONMENT VARIABLES ON RENDER ━━━━━━━━━━━━━━━
+
+After the service is created:
+Go to your service → Click "Environment" tab on the left
+
+Click "Add Environment Variable" for each one:
+
+┌──────────────────────────────────────────────────────────────┐
+│  KEY             │  VALUE                                    │
+├──────────────────────────────────────────────────────────────┤
+│  NODE_ENV        │  production                               │
+│  PORT            │  3000                                     │
+│  JWT_SECRET      │  BhsrcCollege1980SecretXYZ_ChangeThis     │
+│  GMAIL_USER      │  (your Gmail — fill after Step 11)        │
+│  GMAIL_PASS      │  (your App Password — fill after Step 11) │
+│  ADMIN_EMAIL     │  admin@bhsrccollege.edu.in                │
+│  FRONTEND_URL    │  https://bhsrccollege1980.netlify.app     │
+└──────────────────────────────────────────────────────────────┘
+
+Click "Save Changes" → Service will restart automatically.
+
+━━━ STEP 6 — COPY YOUR RENDER BACKEND URL ━━━━━━━━━━━━━━━━━━━━━━
+
+After deployment finishes:
+
+Go to your Render service dashboard
+At the top you will see your URL, something like:
+  https://bhsrc-college-api.onrender.com
+
+⚠️ WRITE THIS DOWN — you need it in the next step.
+
+Test it: Open a browser and go to:
+  https://bhsrc-college-api.onrender.com/health
+
+You should see:
+  {"status":"ok","college":"BHSRC College",...}
+
+If you see this, your backend is running! ✅
+
+━━━ STEP 7 — UPDATE config.js WITH YOUR RENDER URL ━━━━━━━━━━━━━
+
+Now update your config files with the actual Render URL.
+
+Open BOTH these files on your computer:
+  → college-website/frontend/js/config.js
+  → college-website/admin/js/config.js
+
+Find this line in both files:
+  const RENDER_API = 'https://bhsrc-college-api.onrender.com';
+
+If your Render URL is different (Render may add numbers to make it unique),
+change it to match exactly. Example:
+  const RENDER_API = 'https://bhsrc-college-api-xyz1.onrender.com';
+
+Save both files.
+
+You will re-upload these updated files to GitHub so Netlify gets them.
+(In GitHub Desktop: it will show the changes → click "Commit" → "Push")
+
+══════════════════════════════════════════════════════════════════
+PART B — DEPLOY FRONTEND ON NETLIFY
+══════════════════════════════════════════════════════════════════
+
+━━━ STEP 8 — CREATE NETLIFY ACCOUNT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to:  https://www.netlify.com
+2. Click "Sign up" → Choose "Sign up with GitHub"
+3. Click "Authorize netlify" when prompted
+4. Complete signup
+5. You are in the Netlify dashboard
+
+━━━ STEP 9A — DEPLOY FRONTEND TO NETLIFY (Drag & Drop Method) ━━
+
+This is the EASIEST method — no GitHub needed for Netlify.
+
+1. In Netlify dashboard → Click "Add new site" → "Deploy manually"
+
+2. A grey box appears saying "Drag and drop your site folder here"
+
+3. On your computer:
+   → Open the college-website folder
+   → Find the  "frontend"  folder inside it
+   → Drag the entire  frontend  folder into that grey box on Netlify
+
+4. Netlify uploads and deploys in 30–60 seconds
+
+5. After deploy, Netlify gives you a random URL like:
+   https://random-name-123.netlify.app
+
+━━━ STEP 9B — RENAME YOUR SITE TO bhsrccollege1980 ━━━━━━━━━━━━━
+
+1. In Netlify → Go to your site → Click "Site configuration"
+2. Click "Change site name"
+3. Type:  bhsrccollege1980
+4. Click "Save"
+
+Your site is now at:
+  https://bhsrccollege1980.netlify.app ✅
+
+━━━ STEP 9C — ALSO DEPLOY ADMIN PANEL ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The admin folder needs to be INSIDE the frontend folder for Netlify
+to serve it at /admin/.
+
+On your computer:
+1. Open the college-website folder
+2. Copy the entire  admin  folder
+3. Paste it INSIDE the  frontend  folder
+
+So it looks like:
+  frontend/
+    index.html
+    about.html
+    admin/           ← paste admin folder here
+      login.html
+      index.html
+      css/
+      js/
+
+4. Then drag the  frontend  folder to Netlify again (re-deploy)
+   → Netlify will update the deployment
+
+Now /admin/ is accessible at:
+  https://bhsrccollege1980.netlify.app/admin/
+
+━━━ STEP 10 — VERIFY YOUR SITE IS LIVE ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Open browser → go to:
+  https://bhsrccollege1980.netlify.app
+
+  ✅ Homepage loads with college name, navigation
+  ✅ Navigation buttons work (About, Academics, etc.)
+  ✅ Footer shows college info
+
+  Then test:
+  https://bhsrccollege1980.netlify.app/admin/
+
+  ✅ Admin login page shows
+
+══════════════════════════════════════════════════════════════════
+PART C — GMAIL OTP SETUP
+══════════════════════════════════════════════════════════════════
+
+━━━ STEP 11 — SET UP GMAIL APP PASSWORD ━━━━━━━━━━━━━━━━━━━━━━━━
+
+The admin login sends a One-Time Password (OTP) to your email.
+You need a special Gmail App Password for this.
+
+11A. Go to:  https://gmail.com
+     Log in with your college Gmail (e.g. bhsrccollege@gmail.com)
+
+11B. Go to:  https://myaccount.google.com/security
+
+11C. Click "2-Step Verification"
+     → If not enabled: click "Get started" → follow steps → Turn On
+
+11D. Go to:  https://myaccount.google.com/apppasswords
+
+11E. In "App name" box type:  BHSRC College Website
+     Click "Create"
+
+11F. A 16-character password appears, for example:
+       a b c d  e f g h  i j k l  m n o p
+     COPY THIS PASSWORD.
+
+━━━ STEP 12 — ADD GMAIL TO RENDER ENVIRONMENT ━━━━━━━━━━━━━━━━━━
+
+Go to Render.com → Your bhsrc-college-api service → "Environment"
+
+Update these two variables:
+  GMAIL_USER  →  bhsrccollege@gmail.com   (your actual Gmail)
+  GMAIL_PASS  →  abcdefghijklmnop         (the 16-char password from Step 11F)
+
+Click "Save Changes"
+Render restarts the service automatically.
+
+━━━ TEST OTP IS WORKING ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to:  https://bhsrccollege1980.netlify.app/admin/
+2. Enter:  admin@bhsrccollege.edu.in
+3. Enter:  Bhsrc@1980
+4. Click "Send OTP to Email"
+5. Check your Gmail inbox
+6. OTP 6-digit code should arrive within 30 seconds
+7. Enter the OTP → Dashboard opens ✅
+
+══════════════════════════════════════════════════════════════════
+PART D — TEST ALL FEATURES
+══════════════════════════════════════════════════════════════════
+
+━━━ FRONTEND PAGES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✅  https://bhsrccollege1980.netlify.app/
+      Homepage: Slider, stats, departments, placements, news
+
+  ✅  https://bhsrccollege1980.netlify.app/about.html
+      Principal & VP messages, history timeline
+
+  ✅  https://bhsrccollege1980.netlify.app/academics.html
+      Intermediate and Degree programs
+
+  ✅  https://bhsrccollege1980.netlify.app/admissions.html
+      Fee structure, process, online application form
+
+  ✅  https://bhsrccollege1980.netlify.app/placements.html
+      Placed students, company logos marquee
+
+  ✅  https://bhsrccollege1980.netlify.app/departments.html
+      All departments with filter
+
+  ✅  https://bhsrccollege1980.netlify.app/staff.html
+      Faculty and staff cards
+
+  ✅  https://bhsrccollege1980.netlify.app/facilities.html
+      Library, labs, sports, hostel
+
+  ✅  https://bhsrccollege1980.netlify.app/gallery.html
+      Photo gallery with lightbox
+
+  ✅  https://bhsrccollege1980.netlify.app/news.html
+      News and events with category filter
+
+  ✅  https://bhsrccollege1980.netlify.app/contact.html
+      Contact form, map, address
+
+━━━ BACKEND API ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✅  https://bhsrc-college-api.onrender.com/health
+      Shows: {"status":"ok","college":"BHSRC College",...}
+
+  ✅  https://bhsrc-college-api.onrender.com/api/info
+      Shows college info JSON
+
+  ✅  https://bhsrc-college-api.onrender.com/api/departments
+      Shows departments list
+
+━━━ ADMIN PANEL FEATURES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Login:  https://bhsrccollege1980.netlify.app/admin/
+  Email:  admin@bhsrccollege.edu.in
+  Pass:   Bhsrc@1980
+
+  After login, test each section:
+  ✅  Dashboard — shows stats (sliders, news, staff count etc.)
+  ✅  College Info — edit name, address, principal message
+  ✅  Hero Sliders — add/edit banner images
+  ✅  News & Events — add/edit/delete news
+  ✅  Staff/Faculty — add faculty members with photos
+  ✅  Departments — add/edit departments
+  ✅  Placements — add placed students
+  ✅  Companies — add recruiter company logos
+  ✅  Gallery — upload photos by category
+  ✅  Admissions — edit fee structure and process
+  ✅  Enquiries — view contact form submissions
+  ✅  Change Password — update admin password
+
+══════════════════════════════════════════════════════════════════
+IMPORTANT NOTES ABOUT FREE TIER LIMITATIONS
+══════════════════════════════════════════════════════════════════
+
+RENDER FREE TIER — SLEEP ISSUE:
+  On the free plan, Render "sleeps" your backend after 15 minutes
+  of no activity. The FIRST request after sleep takes ~30 seconds.
+  This only affects the first visitor after a gap — subsequent
+  visitors are fast.
+
+  Fix (keep alive — free):
+  Use https://uptimerobot.com (free) to ping your Render URL
+  every 5 minutes:
+  → Sign up → "Add New Monitor" → HTTP monitor
+  → URL: https://bhsrc-college-api.onrender.com/health
+  → Interval: every 5 minutes
+  This keeps the server awake 24/7.
+
+RENDER FREE TIER — DATA STORAGE:
+  The free plan gives 1 GB disk for uploads (images, logos, etc.)
+  This is enough for about 500–1000 photos.
+  If you need more, upgrade to Render paid plan ($7/month = ~₹580)
+  which gives 10 GB persistent disk.
+
+NETLIFY FREE TIER:
+  → 100 GB bandwidth/month (more than enough for a college site)
+  → Unlimited static hosting
+  → Free forever for static sites
+  → No limitations for your use case
+
+══════════════════════════════════════════════════════════════════
+WHAT TO DO IN ADMIN PANEL FIRST (AFTER GOING LIVE)
+══════════════════════════════════════════════════════════════════
+
+Login to admin → Do these steps in order:
+
+  1. College Info → Update:
+     - College full name
+     - Address (your actual college address)
+     - Phone numbers
+     - Email addresses
+     - Principal name and message
+     - Vice Principal name and message
+     - Social media links (Facebook, Instagram, etc.)
+     - Google Maps embed URL (get from maps.google.com → Share → Embed)
+
+  2. Hero Sliders → Add banner images
+     (Upload 3-5 good college photos)
+
+  3. Staff → Add faculty members with photos and designations
+
+  4. Departments → Verify departments list is correct
+
+  5. Gallery → Upload campus photos, event photos
+
+  6. Placements → Add placed student records
+
+  7. Companies → Add recruiter company logos
+
+  8. Change Password → Change from Bhsrc@1980 to something private
+
+══════════════════════════════════════════════════════════════════
+SUMMARY — YOUR CREDENTIALS AND URLS
+══════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │  LIVE WEBSITE                                               │
+  │  URL: https://bhsrccollege1980.netlify.app                  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  ADMIN PANEL                                                │
+  │  URL: https://bhsrccollege1980.netlify.app/admin/           │
+  │  Email: admin@bhsrccollege.edu.in                           │
+  │  Password: Bhsrc@1980                                       │
+  │  (Change this after first login!)                           │
+  ├──────────────────────────────────────────────────────────────┤
+  │  BACKEND API                                                │
+  │  URL: https://bhsrc-college-api.onrender.com                │
+  │  Health Check: /health                                      │
+  ├──────────────────────────────────────────────────────────────┤
+  │  GITHUB REPO                                                │
+  │  URL: https://github.com/bhsrccollege/bhsrc-college-website  │
+  ├──────────────────────────────────────────────────────────────┤
+  │  NETLIFY DASHBOARD                                          │
+  │  URL: https://app.netlify.com                               │
+  ├──────────────────────────────────────────────────────────────┤
+  │  RENDER DASHBOARD                                           │
+  │  URL: https://dashboard.render.com                          │
+  └──────────────────────────────────────────────────────────────┘
+
+══════════════════════════════════════════════════════════════════
+END OF DEPLOYMENT GUIDE
+══════════════════════════════════════════════════════════════════

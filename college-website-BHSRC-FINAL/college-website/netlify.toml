@@ -1,0 +1,105 @@
+# ============================================================
+#  NETLIFY CONFIGURATION — BHSRC College Website
+#  Place this file in the ROOT of what you upload to Netlify
+#  (i.e. at the same level as frontend/ and admin/ folders)
+# ============================================================
+
+[build]
+  # Netlify publishes the frontend folder as the root
+  publish = "frontend"
+
+# ──────────────────────────────────────────────────────────
+#  REDIRECT RULES
+#  These make all .html pages work without typing .html
+#  and make /admin/ route to the admin panel
+# ──────────────────────────────────────────────────────────
+[[redirects]]
+  from = "/admin"
+  to   = "/admin/login.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/"
+  to   = "/admin/login.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to   = "/admin/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to   = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/academics"
+  to   = "/academics.html"
+  status = 200
+
+[[redirects]]
+  from = "/admissions"
+  to   = "/admissions.html"
+  status = 200
+
+[[redirects]]
+  from = "/placements"
+  to   = "/placements.html"
+  status = 200
+
+[[redirects]]
+  from = "/departments"
+  to   = "/departments.html"
+  status = 200
+
+[[redirects]]
+  from = "/staff"
+  to   = "/staff.html"
+  status = 200
+
+[[redirects]]
+  from = "/facilities"
+  to   = "/facilities.html"
+  status = 200
+
+[[redirects]]
+  from = "/gallery"
+  to   = "/gallery.html"
+  status = 200
+
+[[redirects]]
+  from = "/news"
+  to   = "/news.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to   = "/contact.html"
+  status = 200
+
+# ──────────────────────────────────────────────────────────
+#  SECURITY & PERFORMANCE HEADERS
+# ──────────────────────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+
+# Cache static assets for faster repeat visits
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"

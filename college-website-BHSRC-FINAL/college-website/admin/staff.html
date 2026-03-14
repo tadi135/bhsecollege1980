@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff | College Admin</title><link rel="stylesheet" href="css/admin.css"></head>
+<body><script src="js/config.js"></script>
+<script src="js/admin.js"></script><script>
+let items=[];
+document.addEventListener('DOMContentLoaded',async()=>{
+  buildLayout('Staff & Faculty',`
+    <div class="page-header"><h2>Manage Staff & Faculty</h2><button onclick="openAdd()" class="topbar-btn btn-primary">+ Add Staff</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">All Staff Members</span>
+    <select class="form-control" id="roleFilter" onchange="filter()" style="width:130px;"><option value="">All Roles</option><option value="principal">Leadership</option><option value="faculty">Faculty</option><option value="admin">Admin</option></select></div>
+    <div class="table-wrap"><table><thead><tr><th>Photo</th><th>Name</th><th>Designation</th><th>Department</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody id="tbl"></tbody></table></div></div>`);
+  await load();
+});
+async function load(){const r=await adminAPI('/admin/staff');items=r?.data||[];render(items);}
+function render(list){document.getElementById('tbl').innerHTML=list.length?list.map(s=>`<tr>
+  <td>${s.image_url?`<img src="http://localhost:3000${s.image_url}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`:'<span style="font-size:1.5rem;">👤</span>'}</td>
+  <td style="font-weight:600;">${s.name}</td><td>${s.designation}</td><td>${s.department||'-'}</td>
+  <td><span class="badge badge-blue">${s.role}</span></td>
+  <td><label class="switch"><input type="checkbox" ${s.active?'checked':''} onchange="toggleActive(${s.id},this.checked)"><span class="slider-track"></span></label></td>
+  <td><div class="td-actions"><button class="btn-edit" onclick="openEdit(${s.id})">✏️</button><button class="btn-del" onclick="del(${s.id})">🗑</button></div></td>
+</tr>`).join(''):'<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--gray-400);">No staff found.</td></tr>';}
+function filter(){const r=document.getElementById('roleFilter').value;render(r?items.filter(s=>s.role===r):items);}
+function form(s={}){return`<div class="form-grid">
+  <div class="form-group"><label class="form-label">Full Name *</label><input class="form-control" id="sName" value="${s.name||''}" required></div>
+  <div class="form-group"><label class="form-label">Designation *</label><input class="form-control" id="sDes" value="${s.designation||''}" required placeholder="Senior Lecturer"></div>
+  <div class="form-group"><label class="form-label">Department</label><input class="form-control" id="sDept" value="${s.department||''}" placeholder="Mathematics"></div>
+  <div class="form-group"><label class="form-label">Role</label>
+    <select class="form-control" id="sRole"><option value="faculty" ${s.role==='faculty'?'selected':''}>Faculty</option><option value="principal" ${s.role==='principal'?'selected':''}>Leadership</option><option value="admin" ${s.role==='admin'?'selected':''}>Administrative</option></select></div>
+  <div class="form-group"><label class="form-label">Qualification</label><input class="form-control" id="sQual" value="${s.qualification||''}" placeholder="M.Sc., Ph.D."></div>
+  <div class="form-group"><label class="form-label">Experience</label><input class="form-control" id="sExp" value="${s.experience||''}" placeholder="15 Years"></div>
+  <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" id="sEmail" value="${s.email||''}"></div>
+  <div class="form-group"><label class="form-label">Order Index</label><input type="number" class="form-control" id="sOrder" value="${s.order_index||0}"></div>
+  <div class="form-group form-full"><label class="form-label">Photo URL</label><input class="form-control" id="sImg" value="${s.image_url||''}" placeholder="/uploads/staff.jpg"></div>
+</div>`;}
+function openAdd(){openModal('Add Staff Member',form(),async()=>{
+  const d={name:document.getElementById('sName').value,designation:document.getElementById('sDes').value,department:document.getElementById('sDept').value,role:document.getElementById('sRole').value,qualification:document.getElementById('sQual').value,experience:document.getElementById('sExp').value,email:document.getElementById('sEmail').value,order_index:document.getElementById('sOrder').value,image_url:document.getElementById('sImg').value};
+  if(!d.name||!d.designation){toast('Name and Designation required','error');return;}
+  const r=await adminAPI('/admin/staff',{method:'POST',body:JSON.stringify(d)});
+  if(r?.success){toast('Staff added!','success');closeModal();await load();}else toast('Failed','error');
+},'Add Staff');}
+function openEdit(id){const s=items.find(x=>x.id===id);if(!s)return;
+openModal('Edit Staff',form(s),async()=>{
+  const d={name:document.getElementById('sName').value,designation:document.getElementById('sDes').value,department:document.getElementById('sDept').value,role:document.getElementById('sRole').value,qualification:document.getElementById('sQual').value,experience:document.getElementById('sExp').value,email:document.getElementById('sEmail').value,order_index:document.getElementById('sOrder').value,image_url:document.getElementById('sImg').value};
+  const r=await adminAPI(`/admin/staff/${id}`,{method:'PUT',body:JSON.stringify(d)});
+  if(r?.success){toast('Updated!','success');closeModal();await load();}else toast('Failed','error');
+},'Save');}
+async function toggleActive(id,v){await adminAPI(`/admin/staff/${id}`,{method:'PUT',body:JSON.stringify({active:v?1:0})});}
+async function del(id){if(!await confirm('Delete this staff member?'))return;const r=await adminAPI(`/admin/staff/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted','success');await load();}else toast('Failed','error');}
+</script></body></html>

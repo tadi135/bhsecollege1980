@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Placements | College Admin</title><link rel="stylesheet" href="css/admin.css"></head>
+<body><script src="js/config.js"></script>
+<script src="js/admin.js"></script><script>
+let items=[];
+document.addEventListener('DOMContentLoaded',async()=>{
+  buildLayout('Placements',`
+    <div class="page-header"><h2>Manage Placements</h2><button onclick="openAdd()" class="topbar-btn btn-primary">+ Add Placement</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">Placed Students</span>
+    <div class="toolbar" style="margin:0;"><div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" class="form-control" id="srch" placeholder="Search..." oninput="filter()" style="padding-left:32px;width:200px;"></div></div>
+    </div><div class="table-wrap"><table><thead><tr><th>Photo</th><th>Student Name</th><th>Company</th><th>Package</th><th>Batch</th><th>Course</th><th>Actions</th></tr></thead>
+    <tbody id="tbl"></tbody></table></div></div>`);
+  await load();
+});
+async function load(){const r=await adminAPI('/admin/placements');items=r?.data||[];render(items);}
+function render(list){document.getElementById('tbl').innerHTML=list.length?list.map(p=>`<tr>
+  <td>${p.image_url?`<img src="http://localhost:3000${p.image_url}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`:'<span style="font-size:1.5rem;">🎓</span>'}</td>
+  <td style="font-weight:600;">${p.student_name}</td>
+  <td>${p.company}</td><td>${p.package?p.package+' LPA':'-'}</td><td>${p.batch||'-'}</td><td>${p.course||'-'}</td>
+  <td><div class="td-actions"><button class="btn-edit" onclick="openEdit(${p.id})">✏️</button><button class="btn-del" onclick="del(${p.id})">🗑</button></div></td>
+</tr>`).join(''):'<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--gray-400);">No placements yet.</td></tr>';}
+function filter(){const q=document.getElementById('srch').value.toLowerCase();render(items.filter(p=>p.student_name.toLowerCase().includes(q)||p.company.toLowerCase().includes(q)));}
+function form(p={}){return`<div class="form-grid">
+  <div class="form-group"><label class="form-label">Student Name *</label><input class="form-control" id="pName" value="${p.student_name||''}" required></div>
+  <div class="form-group"><label class="form-label">Company *</label><input class="form-control" id="pComp" value="${p.company||''}" required></div>
+  <div class="form-group"><label class="form-label">Package (LPA)</label><input class="form-control" id="pPkg" value="${p.package||''}" placeholder="e.g. 4.5"></div>
+  <div class="form-group"><label class="form-label">Batch Year</label><input class="form-control" id="pBatch" value="${p.batch||''}" placeholder="2024"></div>
+  <div class="form-group"><label class="form-label">Course</label><input class="form-control" id="pCourse" value="${p.course||''}" placeholder="B.Com"></div>
+  <div class="form-group"><label class="form-label">Photo URL</label><input class="form-control" id="pImg" value="${p.image_url||''}" placeholder="/uploads/student.jpg"></div>
+</div>`;}
+function openAdd(){openModal('Add Placement',form(),async()=>{
+  const d={student_name:document.getElementById('pName').value,company:document.getElementById('pComp').value,package:document.getElementById('pPkg').value,batch:document.getElementById('pBatch').value,course:document.getElementById('pCourse').value,image_url:document.getElementById('pImg').value};
+  if(!d.student_name||!d.company){toast('Name and Company required','error');return;}
+  const r=await adminAPI('/admin/placements',{method:'POST',body:JSON.stringify(d)});
+  if(r?.success){toast('Placement added!','success');closeModal();await load();}else toast('Failed','error');
+},'Add');}
+function openEdit(id){const p=items.find(x=>x.id===id);if(!p)return;
+openModal('Edit Placement',form(p),async()=>{
+  const d={student_name:document.getElementById('pName').value,company:document.getElementById('pComp').value,package:document.getElementById('pPkg').value,batch:document.getElementById('pBatch').value,course:document.getElementById('pCourse').value,image_url:document.getElementById('pImg').value};
+  const r=await adminAPI(`/admin/placements/${id}`,{method:'PUT',body:JSON.stringify(d)});
+  if(r?.success){toast('Updated!','success');closeModal();await load();}else toast('Failed','error');
+},'Save');}
+async function del(id){if(!await confirm('Delete this placement record?'))return;const r=await adminAPI(`/admin/placements/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted','success');await load();}else toast('Failed','error');}
+</script></body></html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery | BHSRC Degree & Junior College</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:9999; align-items:center; justify-content:center; }
+    .lightbox.active { display:flex; }
+    .lightbox img { max-width:90vw; max-height:85vh; border-radius:var(--radius); box-shadow:var(--shadow-xl); }
+    .lb-close { position:absolute; top:20px; right:28px; color:white; font-size:2.5rem; cursor:pointer; line-height:1; }
+    .lb-prev,.lb-next { position:absolute; top:50%; transform:translateY(-50%); color:white; font-size:2.5rem; cursor:pointer; background:rgba(255,255,255,0.1); border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; }
+    .lb-prev { left:20px; } .lb-next { right:20px; }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <section class="breadcrumb-section"><div class="container">
+    <h1>Gallery</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><span>Gallery</span></div>
+  </div></section>
+
+  <section class="section">
+    <div class="container">
+      <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-bottom:32px;">
+        <button class="btn btn-navy btn-sm" onclick="filterGallery('all',this)">All Photos</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy);color:var(--navy);" onclick="filterGallery('campus',this)">Campus</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy);color:var(--navy);" onclick="filterGallery('events',this)">Events</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy);color:var(--navy);" onclick="filterGallery('sports',this)">Sports</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy);color:var(--navy);" onclick="filterGallery('labs',this)">Laboratories</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy);color:var(--navy);" onclick="filterGallery('cultural',this)">Cultural</button>
+      </div>
+      <div class="gallery-grid" id="galleryGrid">
+        <div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <span class="lb-close" onclick="closeLB()">✕</span>
+    <span class="lb-prev" onclick="moveLB(-1)">‹</span>
+    <img id="lbImg" src="" alt="Gallery Image">
+    <span class="lb-next" onclick="moveLB(1)">›</span>
+  </div>
+
+  <div id="site-footer"></div>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let allImages = [], currentLB = 0;
+
+    function openLB(i) {
+      currentLB = i;
+      document.getElementById('lbImg').src = allImages[i];
+      document.getElementById('lightbox').classList.add('active');
+    }
+    function closeLB() { document.getElementById('lightbox').classList.remove('active'); }
+    function moveLB(dir) {
+      currentLB = (currentLB + dir + allImages.length) % allImages.length;
+      document.getElementById('lbImg').src = allImages[currentLB];
+    }
+    document.addEventListener('keydown', e => { if(e.key==='Escape') closeLB(); if(e.key==='ArrowLeft') moveLB(-1); if(e.key==='ArrowRight') moveLB(1); });
+
+    function filterGallery(cat, btn) {
+      document.querySelectorAll('[onclick^=filterGallery]').forEach(b => { b.style.background='transparent'; b.style.color='var(--navy)'; });
+      btn.style.background='var(--navy)'; btn.style.color='white';
+      const urlCat = new URL(window.location.href).searchParams.get('cat');
+      loadGallery(cat);
+    }
+
+    async function loadGallery(cat='all') {
+      const url = cat === 'all' ? '/gallery' : `/gallery?category=${cat}`;
+      const res = await apiFetch(url);
+      const items = res.data || [];
+      const grid = document.getElementById('galleryGrid');
+
+      if (!items.length) {
+        // Show placeholder gallery
+        const colors = ['#0c1b33','#1a3a5c','#c8960c','#2d5a8a','#0a2040','#f0b429'];
+        const placeholders = Array.from({length:12}, (_,i) => `
+          <div class="gallery-item" onclick="openLB(${i})">
+            <div style="width:100%;height:100%;background:${colors[i%colors.length]};display:flex;align-items:center;justify-content:center;font-size:3rem;">
+              ${['🏛️','📚','🔬','⚽','🎭','🖥️','🏆','🎓','🌿','👥','🎪','📸'][i]}
+            </div>
+            <div class="overlay">🔍</div>
+          </div>
+        `);
+        allImages = Array(12).fill('');
+        grid.innerHTML = placeholders.join('');
+        return;
+      }
+
+      allImages = items.map(i => i.image_url);
+      grid.innerHTML = items.map((item, i) => `
+        <div class="gallery-item" onclick="openLB(${i})">
+          <img src="${item.image_url}" alt="${item.title || 'Gallery'}" loading="lazy">
+          <div class="overlay">🔍</div>
+        </div>
+      `).join('');
+    }
+
+    async function pageInit() {
+      const cat = new URL(window.location.href).searchParams.get('cat') || 'all';
+      await loadGallery(cat);
+    }
+  </script>
+</body>
+</html>

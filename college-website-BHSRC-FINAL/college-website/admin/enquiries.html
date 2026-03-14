@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enquiries | College Admin</title><link rel="stylesheet" href="css/admin.css"></head>
+<body><script src="js/config.js"></script>
+<script src="js/admin.js"></script><script>
+let items=[];
+document.addEventListener('DOMContentLoaded',async()=>{
+  buildLayout('Enquiries',`
+    <div class="page-header"><h2>Contact Enquiries</h2>
+    <div style="display:flex;gap:10px;"><button onclick="markAllRead()" class="topbar-btn btn-ghost">✅ Mark All Read</button></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">All Enquiries</span>
+    <select class="form-control" id="statFilter" onchange="filterEnq()" style="width:120px;"><option value="">All</option><option value="new">New</option><option value="read">Read</option><option value="replied">Replied</option></select></div>
+    <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Subject</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+    <tbody id="tbl"></tbody></table></div></div>`);
+  await load();
+});
+async function load(){const r=await adminAPI('/admin/enquiries');items=r?.data||[];render(items);}
+function render(list){document.getElementById('tbl').innerHTML=list.length?list.map(e=>`<tr style="${e.status==='new'?'background:#fffbeb;':''}">
+  <td style="font-weight:${e.status==='new'?'700':'400'}">${e.name}</td>
+  <td style="font-size:12px;">${e.email||'-'}</td>
+  <td style="font-size:12px;">${e.phone||'-'}</td>
+  <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;">${e.subject||'-'}</td>
+  <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;" title="${e.message}">${e.message}</td>
+  <td><select class="form-control" onchange="updateStatus(${e.id},this.value)" style="width:90px;font-size:11px;padding:4px 6px;">
+    <option value="new" ${e.status==='new'?'selected':''}>New</option>
+    <option value="read" ${e.status==='read'?'selected':''}>Read</option>
+    <option value="replied" ${e.status==='replied'?'selected':''}>Replied</option>
+  </select></td>
+  <td style="font-size:11px;">${fmtDate(e.created_at)}</td>
+  <td><button class="btn-del" onclick="del(${e.id})">🗑</button></td>
+</tr>`).join(''):'<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--gray-400);">No enquiries yet.</td></tr>';}
+function filterEnq(){const s=document.getElementById('statFilter').value;render(s?items.filter(e=>e.status===s):items);}
+async function updateStatus(id,status){await adminAPI(`/admin/enquiries/${id}`,{method:'PUT',body:JSON.stringify({status})});toast('Status updated','success');}
+async function markAllRead(){for(const e of items.filter(e=>e.status==='new'))await adminAPI(`/admin/enquiries/${e.id}`,{method:'PUT',body:JSON.stringify({status:'read'})});toast('All marked as read','success');await load();}
+async function del(id){if(!await confirm('Delete this enquiry?'))return;const r=await adminAPI(`/admin/enquiries/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted','success');await load();}else toast('Failed','error');}
+</script></body></html>

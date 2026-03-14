@@ -1,0 +1,31 @@
+# ============================================================
+#  RENDER.COM DEPLOYMENT CONFIG — BHSRC College Backend
+#  This file tells Render how to run your Node.js backend
+# ============================================================
+
+services:
+  - type: web
+    name: bhsrc-college-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: JWT_SECRET
+        generateValue: true        # Render auto-generates a secure value
+      - key: GMAIL_USER
+        sync: false                # You fill this in Render dashboard
+      - key: GMAIL_PASS
+        sync: false                # You fill this in Render dashboard
+      - key: ADMIN_EMAIL
+        value: admin@bhsrccollege.edu.in
+      - key: FRONTEND_URL
+        value: https://bhsrccollege1980.netlify.app
+    disk:
+      name: uploads-storage
+      mountPath: /opt/render/project/src/backend/uploads
+      sizeGB: 10                   # 10 GB for uploaded images

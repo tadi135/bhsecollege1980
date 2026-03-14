@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Placements at BHSRC College - 95% placement record with top companies like TCS, Infosys, Wipro, Amazon.">
+  <title>Placements | BHSRC Degree & Junior College</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <section class="breadcrumb-section">
+    <div class="container">
+      <h1>Placements</h1>
+      <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><span>Placements</span></div>
+    </div>
+  </section>
+
+  <!-- Placement Stats -->
+  <section class="section section-sm" style="background:linear-gradient(135deg,var(--navy),var(--navy-light));" id="stats">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" style="background:rgba(200,150,12,0.15); color:var(--gold-light); border-color:rgba(200,150,12,0.25);">Our Record</div>
+        <h2 class="section-title" style="color:white;">Placement <span>Statistics</span></h2>
+      </div>
+      <div class="grid-4">
+        <div style="background:rgba(255,255,255,0.08); border-radius:var(--radius-lg); padding:28px; text-align:center; border-top:3px solid var(--gold);">
+          <div style="font-size:2.5rem; font-family:var(--font-display); color:var(--gold);" id="statPlace">95%</div>
+          <div style="color:rgba(255,255,255,0.7); font-size:13px; margin-top:8px; text-transform:uppercase; letter-spacing:0.05em;">Placement Rate</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.08); border-radius:var(--radius-lg); padding:28px; text-align:center; border-top:3px solid var(--gold);">
+          <div style="font-size:2.5rem; font-family:var(--font-display); color:var(--gold);">500+</div>
+          <div style="color:rgba(255,255,255,0.7); font-size:13px; margin-top:8px; text-transform:uppercase; letter-spacing:0.05em;">Students Placed (2023-24)</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.08); border-radius:var(--radius-lg); padding:28px; text-align:center; border-top:3px solid var(--gold);">
+          <div style="font-size:2.5rem; font-family:var(--font-display); color:var(--gold);">50+</div>
+          <div style="color:rgba(255,255,255,0.7); font-size:13px; margin-top:8px; text-transform:uppercase; letter-spacing:0.05em;">Recruiting Companies</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.08); border-radius:var(--radius-lg); padding:28px; text-align:center; border-top:3px solid var(--gold);">
+          <div style="font-size:2.5rem; font-family:var(--font-display); color:var(--gold);">8.5</div>
+          <div style="color:rgba(255,255,255,0.7); font-size:13px; margin-top:8px; text-transform:uppercase; letter-spacing:0.05em;">Avg. Package (LPA)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Placed Students -->
+  <section class="section" id="students">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Our Achievers</div>
+        <h2 class="section-title">Placed <span>Students</span></h2>
+        <div class="divider"></div>
+        <p class="section-sub">Celebrating our alumni who are making their mark at leading companies across India and the world.</p>
+      </div>
+      <!-- Filter by batch -->
+      <div style="display:flex; gap:12px; justify-content:center; margin-bottom:32px; flex-wrap:wrap;" id="batchFilters">
+        <button class="btn btn-navy btn-sm active-filter" onclick="filterBatch('all', this)">All Batches</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy); color:var(--navy);" onclick="filterBatch('2024', this)">2024</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy); color:var(--navy);" onclick="filterBatch('2023', this)">2023</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy); color:var(--navy);" onclick="filterBatch('2022', this)">2022</button>
+      </div>
+      <div class="grid-4" id="placedGrid">
+        <div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Companies -->
+  <section class="section" style="background:var(--gray-50);" id="companies">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Our Recruiters</div>
+        <h2 class="section-title">Companies that <span>Hire</span> Our Students</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="marquee-wrap" id="companiesMarquee" style="margin-bottom:32px;">
+        <div class="loading-wrap"><div class="spinner"></div></div>
+      </div>
+      <div class="grid-4" id="companiesGrid">
+        <div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Placement Process -->
+  <section class="section" style="background:var(--navy);">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" style="background:rgba(200,150,12,0.15); color:var(--gold-light);">How It Works</div>
+        <h2 class="section-title" style="color:white;">Placement <span>Process</span></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="grid-4">
+        ${[
+          {step:'01', icon:'📝', title:'Registration', desc:'Final year students register with the Placement Cell'},
+          {step:'02', icon:'📚', title:'Training', desc:'Aptitude, communication & technical skill training sessions'},
+          {step:'03', icon:'💼', title:'Campus Drive', desc:'Companies visit campus for recruitment presentations & tests'},
+          {step:'04', icon:'🎉', title:'Offer Letter', desc:'Selected students receive offer letters and join companies'},
+        ].map(p=>`
+          <div style="background:rgba(255,255,255,0.06); border-radius:var(--radius-lg); padding:28px; text-align:center; position:relative;">
+            <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--gold); color:var(--navy); width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;">${p.step}</div>
+            <div style="font-size:2.5rem; margin:16px 0 12px;">${p.icon}</div>
+            <div style="font-family:var(--font-display); color:var(--gold); margin-bottom:8px;">${p.title}</div>
+            <div style="color:rgba(255,255,255,0.7); font-size:13px;">${p.desc}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let allPlacements = [];
+
+    function filterBatch(batch, btn) {
+      document.querySelectorAll('#batchFilters button').forEach(b => {
+        b.style.background = 'transparent';
+        b.style.color = 'var(--navy)';
+      });
+      btn.style.background = 'var(--navy)';
+      btn.style.color = 'white';
+      const filtered = batch === 'all' ? allPlacements : allPlacements.filter(p => p.batch === batch);
+      renderPlacements(filtered);
+    }
+
+    function renderPlacements(list) {
+      const grid = document.getElementById('placedGrid');
+      if (!list.length) {
+        const fallback = ['Ravi Kumar','Priya Sharma','Arjun Reddy','Sneha Rao','Manoj Verma','Kavitha Nair','Rohit Singh','Deepa Menon'];
+        const companies = ['TCS','Infosys','Wipro','HCL','Cognizant','Accenture','Tech Mahindra','Amazon'];
+        grid.innerHTML = fallback.map((n,i) => `
+          <div class="placement-card"><div class="student-img-placeholder">🎓</div>
+          <div class="info"><div class="student-name">${n}</div>
+          <div class="company-name">📌 ${companies[i]}</div>
+          <div class="pkg">💰 ${(4+i*0.5).toFixed(1)} LPA</div>
+          <div class="batch-course">2024 • B.Com</div></div></div>
+        `).join('');
+        return;
+      }
+      grid.innerHTML = list.map(p => `
+        <div class="placement-card">
+          ${p.image_url ? `<img src="${p.image_url}" class="student-img" alt="${p.student_name}">` : '<div class="student-img-placeholder">🎓</div>'}
+          <div class="info">
+            <div class="student-name">${p.student_name}</div>
+            <div class="company-name">📌 ${p.company}</div>
+            ${p.package ? `<div class="pkg">💰 ${p.package} LPA</div>` : ''}
+            <div class="batch-course">${[p.batch, p.course].filter(Boolean).join(' • ')}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function pageInit() {
+      const info = await getCollegeInfo();
+      if (info.placement_percent) document.getElementById('statPlace').textContent = info.placement_percent;
+
+      const res = await apiFetch('/placements?limit=100');
+      allPlacements = res.data || [];
+      renderPlacements(allPlacements);
+
+      // Companies grid
+      const cRes = await apiFetch('/companies');
+      const companies = cRes.data || [];
+      const fallbackCompanies = ['TCS','Infosys','Wipro','HCL','Cognizant','Accenture','Tech Mahindra','Amazon','Deloitte','KPMG','ICICI Bank','HDFC Bank'];
+      const cList = companies.length ? companies : fallbackCompanies.map(n => ({ name: n }));
+      document.getElementById('companiesGrid').innerHTML = cList.map(c => `
+        <div style="background:var(--white); border-radius:var(--radius); padding:20px; text-align:center; box-shadow:var(--shadow-sm); border:1px solid var(--gray-100); transition:var(--transition);"
+          onmouseenter="this.style.boxShadow='var(--shadow-md)'; this.style.transform='translateY(-3px)';"
+          onmouseleave="this.style.boxShadow='var(--shadow-sm)'; this.style.transform='none';">
+          ${c.logo_url ? `<img src="${c.logo_url}" alt="${c.name}" style="height:40px; object-fit:contain; margin:0 auto 10px;">` : ''}
+          <div style="font-weight:700; color:var(--navy); font-size:13px;">${c.name}</div>
+        </div>
+      `).join('');
+
+      initScrollAnimation();
+    }
+  </script>
+</body>
+</html>

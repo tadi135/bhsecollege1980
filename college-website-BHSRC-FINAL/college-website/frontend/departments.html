@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Departments | BHSRC Degree & Junior College</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <section class="breadcrumb-section"><div class="container">
+    <h1>All Departments</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><a href="academics.html">Academics</a><span>›</span><span>Departments</span></div>
+  </div></section>
+
+  <section class="section">
+    <div class="container">
+      <div style="display:flex; gap:12px; justify-content:center; margin-bottom:36px;">
+        <button class="btn btn-navy btn-sm" onclick="filterDept('all',this)">All Departments</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy);color:var(--navy);" onclick="filterDept('intermediate',this)">Intermediate</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy);color:var(--navy);" onclick="filterDept('degree',this)">Degree</button>
+      </div>
+      <div class="grid-3" id="deptGrid">
+        <div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let allDepts = [];
+    const icons = {'MPC':'📐','BiPC':'🔬','MEC':'💹','CEC':'📖','B.Sc':'🧪','B.Com':'💼','BA':'📜','BCA':'💻'};
+    function getIcon(name) { for(const k in icons){ if(name.includes(k)) return icons[k]; } return '🎓'; }
+
+    function filterDept(type, btn) {
+      document.querySelectorAll('[onclick^=filterDept]').forEach(b => { b.style.background='transparent'; b.style.color='var(--navy)'; });
+      btn.style.background='var(--navy)'; btn.style.color='white';
+      renderDepts(type === 'all' ? allDepts : allDepts.filter(d => d.type === type));
+    }
+
+    function renderDepts(list) {
+      document.getElementById('deptGrid').innerHTML = list.map(d => `
+        <div class="card fade-in" style="border-top:4px solid ${d.type==='intermediate'?'var(--navy)':'var(--gold)'}; padding:0;">
+          <div style="padding:28px; text-align:center;">
+            <div style="font-size:2.8rem; margin-bottom:12px;">${getIcon(d.name)}</div>
+            <span class="dept-badge ${d.type==='intermediate'?'badge-inter':'badge-degree'}">${d.type==='intermediate'?'Intermediate':'Degree'}</span>
+            <h3 class="dept-name" style="margin-top:8px;">${d.name}</h3>
+            <p style="color:var(--gray-500); font-size:13px; margin-top:8px; line-height:1.6;">${d.description||''}</p>
+          </div>
+          <div style="background:var(--gray-50); padding:16px 24px; display:grid; grid-template-columns:1fr 1fr; gap:8px; text-align:center; border-top:1px solid var(--gray-100);">
+            <div><div style="font-weight:700;color:var(--navy);font-size:1rem;">${d.intake||0}</div><div style="font-size:11px;color:var(--gray-500);">Seats</div></div>
+            <div><div style="font-weight:700;color:var(--navy);font-size:1rem;">${d.duration||'-'}</div><div style="font-size:11px;color:var(--gray-500);">Duration</div></div>
+          </div>
+          ${d.hod ? `<div style="padding:12px 24px; font-size:13px; color:var(--navy); border-top:1px solid var(--gray-100);">👤 HOD: <strong>${d.hod}</strong></div>` : ''}
+        </div>
+      `).join('');
+      initScrollAnimation();
+    }
+
+    async function pageInit() {
+      const res = await apiFetch('/departments');
+      allDepts = res.data || [];
+      renderDepts(allDepts);
+    }
+  </script>
+</body>
+</html>

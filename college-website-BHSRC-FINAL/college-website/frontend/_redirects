@@ -1,0 +1,6 @@
+# Netlify _redirects file
+# Place this in the frontend/ folder
+
+/admin              /admin/login.html   200
+/admin/             /admin/login.html   200
+/admin/*            /admin/:splat       200

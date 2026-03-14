@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Info | College Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <script src="js/config.js"></script>
+<script src="js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      buildLayout('College Information', `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Edit College Information</span>
+            <button onclick="saveInfo()" class="topbar-btn btn-primary">💾 Save All Changes</button>
+          </div>
+          <div class="card-body">
+            <div id="tabs" class="tabs">
+              <div class="tab active" onclick="switchTab('basic',this)">Basic Info</div>
+              <div class="tab" onclick="switchTab('principal',this)">Principal & VP</div>
+              <div class="tab" onclick="switchTab('social',this)">Social & Map</div>
+              <div class="tab" onclick="switchTab('stats',this)">Stats & Awards</div>
+            </div>
+            <form id="infoForm">
+              <!-- Basic -->
+              <div id="tab-basic" class="tab-content">
+                <div class="form-grid">
+                  <div class="form-group form-full"><label class="form-label">College Full Name</label><input type="text" class="form-control" name="college_name" placeholder="BHSRC Degree & Junior College"></div>
+                  <div class="form-group"><label class="form-label">Short Name / Abbreviation</label><input type="text" class="form-control" name="college_short_name" placeholder="BHSRC"></div>
+                  <div class="form-group"><label class="form-label">Tagline / Motto</label><input type="text" class="form-control" name="tagline" placeholder="Shaping Futures, Building Leaders"></div>
+                  <div class="form-group form-full"><label class="form-label">Full Address</label><textarea class="form-control" name="address" rows="2"></textarea></div>
+                  <div class="form-group"><label class="form-label">Phone Number 1</label><input type="text" class="form-control" name="phone1" placeholder="+91 98765 43210"></div>
+                  <div class="form-group"><label class="form-label">Phone Number 2</label><input type="text" class="form-control" name="phone2"></div>
+                  <div class="form-group"><label class="form-label">Email 1 (Info)</label><input type="email" class="form-control" name="email1"></div>
+                  <div class="form-group"><label class="form-label">Email 2 (Admissions)</label><input type="email" class="form-control" name="email2"></div>
+                  <div class="form-group"><label class="form-label">Year Established</label><input type="text" class="form-control" name="established" placeholder="1995"></div>
+                  <div class="form-group"><label class="form-label">NAAC Grade</label><input type="text" class="form-control" name="naac_grade" placeholder="A+"></div>
+                  <div class="form-group form-full"><label class="form-label">Affiliation</label><input type="text" class="form-control" name="affiliation"></div>
+                </div>
+              </div>
+              <!-- Principal -->
+              <div id="tab-principal" class="tab-content" style="display:none">
+                <div class="form-grid">
+                  <div class="form-group"><label class="form-label">Principal Name</label><input type="text" class="form-control" name="principal_name"></div>
+                  <div class="form-group"><label class="form-label">Principal Image URL</label><input type="text" class="form-control" name="principal_image" placeholder="/uploads/principal.jpg"></div>
+                  <div class="form-group form-full"><label class="form-label">Principal's Message</label><textarea class="form-control" name="principal_message" rows="5"></textarea></div>
+                  <div class="form-group"><label class="form-label">Vice Principal Name</label><input type="text" class="form-control" name="vice_principal_name"></div>
+                  <div class="form-group"><label class="form-label">Vice Principal Image URL</label><input type="text" class="form-control" name="vice_principal_image" placeholder="/uploads/vice-principal.jpg"></div>
+                  <div class="form-group form-full"><label class="form-label">Vice Principal's Message</label><textarea class="form-control" name="vice_principal_message" rows="5"></textarea></div>
+                </div>
+              </div>
+              <!-- Social -->
+              <div id="tab-social" class="tab-content" style="display:none">
+                <div class="form-grid">
+                  <div class="form-group"><label class="form-label">Facebook URL</label><input type="url" class="form-control" name="facebook"></div>
+                  <div class="form-group"><label class="form-label">Instagram URL</label><input type="url" class="form-control" name="instagram"></div>
+                  <div class="form-group"><label class="form-label">Twitter/X URL</label><input type="url" class="form-control" name="twitter"></div>
+                  <div class="form-group"><label class="form-label">YouTube URL</label><input type="url" class="form-control" name="youtube"></div>
+                  <div class="form-group form-full">
+                    <label class="form-label">Google Maps Embed URL</label>
+                    <textarea class="form-control" name="map_embed" rows="3" placeholder="https://www.google.com/maps/embed?pb=..."></textarea>
+                    <small style="color:var(--gray-400);font-size:11px;">Go to Google Maps → Share → Embed a map → Copy the src URL only</small>
+                  </div>
+                </div>
+              </div>
+              <!-- Stats -->
+              <div id="tab-stats" class="tab-content" style="display:none">
+                <div class="form-grid">
+                  <div class="form-group"><label class="form-label">Total Students</label><input type="text" class="form-control" name="total_students" placeholder="3500+"></div>
+                  <div class="form-group"><label class="form-label">Total Faculty</label><input type="text" class="form-control" name="total_faculty" placeholder="120+"></div>
+                  <div class="form-group"><label class="form-label">Placement Percentage</label><input type="text" class="form-control" name="placement_percent" placeholder="95%"></div>
+                  <div class="form-group"><label class="form-label">Years of Excellence</label><input type="text" class="form-control" name="years_excellence" placeholder="29+"></div>
+                  <div class="form-group"><label class="form-label">Logo Image URL</label><input type="text" class="form-control" name="logo_url" placeholder="/uploads/logo.png"></div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      `);
+
+      // Load existing data
+      const res = await adminAPI('/admin/college-info');
+      if (res?.success) {
+        const form = document.getElementById('infoForm');
+        for (const [key, value] of Object.entries(res.data)) {
+          const el = form.elements[key];
+          if (el) el.value = value || '';
+        }
+      }
+    });
+
+    function switchTab(name, btn) {
+      document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + name).style.display = '';
+      btn.classList.add('active');
+    }
+
+    async function saveInfo() {
+      const form = document.getElementById('infoForm');
+      const data = {};
+      new FormData(form).forEach((v, k) => { data[k] = v; });
+      const res = await adminAPI('/admin/college-info', { method: 'PUT', body: JSON.stringify(data) });
+      if (res?.success) toast('College info updated successfully!', 'success');
+      else toast('Failed to update college info', 'error');
+    }
+  </script>
+</body>
+</html>

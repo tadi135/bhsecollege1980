@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News & Events | BHSRC Degree & Junior College</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <section class="breadcrumb-section"><div class="container">
+    <h1>News & Events</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><span>News & Events</span></div>
+  </div></section>
+
+  <section class="section">
+    <div class="container">
+      <!-- Category Filters -->
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:36px; justify-content:center;">
+        <button class="btn btn-navy btn-sm" onclick="filterNews('all',this)">All</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy); color:var(--navy);" onclick="filterNews('news',this)">News</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy); color:var(--navy);" onclick="filterNews('event',this)">Events</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy); color:var(--navy);" onclick="filterNews('placement',this)">Placements</button>
+        <button class="btn btn-sm" style="border:2px solid var(--navy); color:var(--navy);" onclick="filterNews('sports',this)">Sports</button>
+      </div>
+      <div class="grid-3" id="newsGrid">
+        <div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let allNews = [];
+
+    function filterNews(cat, btn) {
+      document.querySelectorAll('[onclick^=filterNews] ').forEach(b => { b.style.background='transparent'; b.style.color='var(--navy)'; });
+      btn.style.background='var(--navy)'; btn.style.color='white';
+      renderNews(cat === 'all' ? allNews : allNews.filter(n => n.category === cat));
+    }
+
+    function renderNews(list) {
+      const grid = document.getElementById('newsGrid');
+      if (!list.length) { grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--gray-500)">No news found in this category.</p>'; return; }
+      grid.innerHTML = list.map(n => `
+        <div class="news-card fade-in">
+          ${n.image_url ? `<img src="${n.image_url}" class="news-img" alt="${n.title}" loading="lazy">` : `<div class="news-img-placeholder">📰</div>`}
+          <div class="news-body">
+            <div class="news-date">${formatDate(n.event_date || n.created_at)}</div>
+            <h3 class="news-title">${n.title}</h3>
+            <p class="news-excerpt">${n.content || ''}</p>
+          </div>
+          <div class="news-footer"><span class="news-cat-tag ${catTag(n.category)}">${n.category}</span></div>
+        </div>
+      `).join('');
+      initScrollAnimation();
+    }
+
+    async function pageInit() {
+      const res = await apiFetch('/news?limit=50');
+      allNews = res.data || [];
+      if (!allNews.length) allNews = [
+        {title:'Admissions Open 2024-25',content:'Apply now for all programs.',category:'news',created_at:new Date().toISOString()},
+        {title:'Annual Cultural Fest UTSAV 2024',content:'3 days of fun and entertainment.',category:'event',created_at:new Date().toISOString()},
+        {title:'Campus Placement by TCS',content:'50 students placed at TCS.',category:'placement',created_at:new Date().toISOString()},
+      ];
+      renderNews(allNews);
+    }
+  </script>
+</body>
+</html>

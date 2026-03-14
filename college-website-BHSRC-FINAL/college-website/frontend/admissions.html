@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admissions at BHSRC College - process, fee structure, scholarships and online application.">
+  <title>Admissions | BHSRC Degree & Junior College</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <section class="breadcrumb-section"><div class="container">
+    <h1>Admissions</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><span>Admissions</span></div>
+  </div></section>
+
+  <!-- Admission Notice -->
+  <section class="section section-sm" style="background:linear-gradient(135deg,var(--gold),var(--gold-light)); text-align:center;">
+    <div class="container">
+      <div style="font-size:2rem; margin-bottom:8px;">🎓</div>
+      <h2 style="font-family:var(--font-display); color:var(--navy); margin-bottom:8px;">Admissions Open for 2024–25</h2>
+      <p style="color:rgba(12,27,51,0.8); margin-bottom:20px;">Apply now for Intermediate and Degree programs. Limited seats available.</p>
+      <a href="#apply" class="btn btn-navy">Apply Online Now</a>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="section" id="process">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Step by Step</div>
+        <h2 class="section-title">Admission <span>Process</span></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="grid-4">
+        ${['Step 1: Choose Your Course', 'Step 2: Collect Application Form', 'Step 3: Submit Documents', 'Step 4: Pay Fees & Confirm'].map((s,i)=>`
+          <div style="text-align:center; padding:28px; background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); border-top:4px solid var(--gold);">
+            <div style="width:52px;height:52px;border-radius:50%;background:var(--navy);color:var(--gold);font-family:var(--font-display);font-size:1.4rem;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">${i+1}</div>
+            <div style="font-weight:700;color:var(--navy);">${s}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Required Documents -->
+      <div style="margin-top:48px; background:var(--gray-50); border-radius:var(--radius-lg); padding:36px;">
+        <h3 style="font-family:var(--font-display); color:var(--navy); margin-bottom:20px; font-size:1.3rem;">📋 Documents Required</h3>
+        <div class="grid-2" style="gap:16px;">
+          <ul style="display:flex; flex-direction:column; gap:10px;">
+            ${['SSC/10th Marks Memo (Original + 3 copies)','Intermediate/+2 Marks Memo (for Degree applicants)','Transfer Certificate (TC) from previous institution','Migration Certificate (if applicable)'].map(d=>`<li style="display:flex;gap:10px;font-size:14px;"><span style="color:var(--gold);font-weight:700;">✓</span>${d}</li>`).join('')}
+          </ul>
+          <ul style="display:flex; flex-direction:column; gap:10px;">
+            ${['Aadhar Card / Birth Certificate','Caste Certificate (if applicable for reservation)','Income Certificate (for scholarship)','6 recent passport-size photographs'].map(d=>`<li style="display:flex;gap:10px;font-size:14px;"><span style="color:var(--gold);font-weight:700;">✓</span>${d}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fee Structure -->
+  <section class="section" style="background:var(--gray-50);" id="fees">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Financials</div>
+        <h2 class="section-title">Fee <span>Structure</span> 2024–25</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="grid-2">
+        <div style="background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); overflow:hidden;">
+          <div style="background:var(--navy); color:white; padding:20px 24px;">
+            <h3 style="font-family:var(--font-display);">Intermediate (Junior College)</h3>
+            <p style="font-size:13px; opacity:0.7; margin-top:4px;">MPC | BiPC | MEC | CEC</p>
+          </div>
+          <div id="interFees" style="padding:24px;">
+            <table style="width:100%; border-collapse:collapse; font-size:14px;">
+              <tr style="border-bottom:1px solid var(--gray-100);">
+                <th style="text-align:left;padding:10px 0;color:var(--gray-700);">Course</th>
+                <th style="text-align:right;padding:10px 0;color:var(--gray-700);">Annual Fee</th>
+              </tr>
+              <tr style="border-bottom:1px solid var(--gray-100);"><td style="padding:10px 0;">MPC</td><td style="text-align:right;font-weight:700;color:var(--navy);">₹35,000</td></tr>
+              <tr style="border-bottom:1px solid var(--gray-100);"><td style="padding:10px 0;">BiPC</td><td style="text-align:right;font-weight:700;color:var(--navy);">₹35,000</td></tr>
+              <tr style="border-bottom:1px solid var(--gray-100);"><td style="padding:10px 0;">MEC</td><td style="text-align:right;font-weight:700;color:var(--navy);">₹28,000</td></tr>
+              <tr><td style="padding:10px 0;">CEC</td><td style="text-align:right;font-weight:700;color:var(--navy);">₹28,000</td></tr>
+            </table>
+          </div>
+        </div>
+        <div style="background:var(--white); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); overflow:hidden;">
+          <div style="background:var(--gold); color:var(--navy); padding:20px 24px;">
+            <h3 style="font-family:var(--font-display);">Degree Programs</h3>
+            <p style="font-size:13px; opacity:0.7; margin-top:4px;">B.Sc | B.Com | BA | BCA</p>
+          </div>
+          <div id="degreeFees" style="padding:24px;">
+            <table style="width:100%; border-collapse:collapse; font-size:14px;">
+              <tr style="border-bottom:1px solid var(--gray-100);">
+                <th style="text-align:left;padding:10px 0;color:var(--gray-700);">Course</th>
+                <th style="text-align:right;padding:10px 0;color:var(--gray-700);">Annual Fee</th>
+              </tr>
+              <tr style="border-bottom:1px solid var(--gray-100);"><td style="padding:10px 0;">B.Sc (All Groups)</td><td style="text-align:right;font-weight:700;color:var(--navy);">₹25,000</td></tr>
+              <tr style="border-bottom:1px solid var(--gray-100);"><td style="padding:10px 0;">B.Com (General)</td><td style="text-align:right;font-weight:700;color:var(--navy);">₹22,000</td></tr>
+              <tr style="border-bottom:1px solid var(--gray-100);"><td style="padding:10px 0;">B.Com (Computers)</td><td style="text-align:right;font-weight:700;color:var(--navy);">₹28,000</td></tr>
+              <tr style="border-bottom:1px solid var(--gray-100);"><td style="padding:10px 0;">BA</td><td style="text-align:right;font-weight:700;color:var(--navy);">₹18,000</td></tr>
+              <tr><td style="padding:10px 0;">BCA</td><td style="text-align:right;font-weight:700;color:var(--navy);">₹35,000</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center; font-size:12px; color:var(--gray-500); margin-top:16px;">* Fees are subject to revision. Contact the admissions office for the latest fee structure.</p>
+    </div>
+  </section>
+
+  <!-- Scholarships -->
+  <section class="section" id="scholarships">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Financial Aid</div>
+        <h2 class="section-title">Scholarships & <span>Aid</span></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="grid-3">
+        ${[
+          {icon:'🏆',title:'Merit Scholarship',desc:'Top performers in board exams receive up to 50% fee waiver. Min 90% marks required.'},
+          {icon:'💙',title:'SC/ST Scholarship',desc:'Government scholarships available for SC/ST students as per state government norms.'},
+          {icon:'👩‍🎓',title:"Girl Child Scholarship",desc:'Special fee concessions for girl students to promote female education.'},
+          {icon:'⚽',title:'Sports Scholarship',desc:'Exceptional sportspersons representing state/national level get special concessions.'},
+          {icon:'💰',title:'EBC Scholarship',desc:'Financial assistance for economically backward class students. Income criteria apply.'},
+          {icon:'🔬',title:'Management Scholarship',desc:'Management discretion scholarships for deserving students based on interview.'},
+        ].map(s=>`
+          <div style="background:var(--white); border-radius:var(--radius-lg); padding:28px; box-shadow:var(--shadow-md); border-left:4px solid var(--gold);">
+            <div style="font-size:2rem; margin-bottom:12px;">${s.icon}</div>
+            <h3 style="font-family:var(--font-serif); color:var(--navy); margin-bottom:8px;">${s.title}</h3>
+            <p style="font-size:13px; color:var(--gray-500); line-height:1.6;">${s.desc}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- Apply Online -->
+  <section class="section" style="background:var(--gray-50);" id="apply">
+    <div class="container" style="max-width:680px;">
+      <div class="section-header fade-in">
+        <div class="section-tag">Online Application</div>
+        <h2 class="section-title">Apply <span>Online</span></h2>
+        <div class="divider"></div>
+        <p class="section-sub">Fill in your details below and our admissions team will contact you within 24 hours.</p>
+      </div>
+      <form id="applyForm" style="background:var(--white); padding:36px; border-radius:var(--radius-lg); box-shadow:var(--shadow-lg);" onsubmit="submitApp(event)">
+        <div class="grid-2" style="gap:16px;">
+          <div class="form-group"><label class="form-label">Full Name *</label><input type="text" class="form-control" name="name" required placeholder="Your full name"></div>
+          <div class="form-group"><label class="form-label">Mobile Number *</label><input type="tel" class="form-control" name="phone" required placeholder="+91 XXXXX XXXXX"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" name="email" placeholder="your@email.com"></div>
+        <div class="form-group"><label class="form-label">Preferred Course *</label>
+          <select class="form-control" name="subject" required>
+            <option value="">Select a course...</option>
+            <optgroup label="Intermediate">
+              <option>Intermediate - MPC</option><option>Intermediate - BiPC</option>
+              <option>Intermediate - MEC</option><option>Intermediate - CEC</option>
+            </optgroup>
+            <optgroup label="Degree">
+              <option>B.Sc (Mathematics)</option><option>B.Sc (Physics)</option>
+              <option>B.Com (General)</option><option>B.Com (Computers)</option>
+              <option>BA (History & Economics)</option><option>BCA</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Message / Query</label>
+          <textarea class="form-control" name="message" rows="4" placeholder="Any specific queries about admissions, fees, or scholarships...">Interested in admission</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:14px;">Submit Application →</button>
+        <p style="text-align:center; font-size:12px; color:var(--gray-500); margin-top:12px;">We respect your privacy. Your information will not be shared.</p>
+      </form>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    async function submitApp(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form));
+      const btn = form.querySelector('button[type=submit]');
+      btn.textContent = 'Submitting...'; btn.disabled = true;
+      const res = await apiFetch('/enquiry', { method:'POST', body: JSON.stringify(data) });
+      if (res.success) {
+        showToast('Application submitted! We will contact you soon.', 'success');
+        form.reset();
+      } else showToast('Failed to submit. Please call us directly.', 'error');
+      btn.textContent = 'Submit Application →'; btn.disabled = false;
+    }
+    async function pageInit() { initScrollAnimation(); }
+  </script>
+</body>
+</html>

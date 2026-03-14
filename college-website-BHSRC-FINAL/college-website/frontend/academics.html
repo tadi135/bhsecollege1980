@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Academic programs at BHSRC College - Intermediate (MPC, BiPC, MEC, CEC) and Degree (B.Sc, B.Com, BCA, BA) courses.">
+  <title>Academics | BHSRC Degree & Junior College</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+  <section class="breadcrumb-section">
+    <div class="container">
+      <h1>Academics</h1>
+      <div class="breadcrumb"><a href="index.html">Home</a><span>›</span><span>Academics</span></div>
+    </div>
+  </section>
+
+  <!-- Intermediate Programs -->
+  <section class="section" id="intermediate">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Junior College</div>
+        <h2 class="section-title">Intermediate <span>Programs</span></h2>
+        <div class="divider"></div>
+        <p class="section-sub">Two-year programs affiliated to the Telangana State Board of Intermediate Education (TSBIE), providing a strong foundation for higher education.</p>
+      </div>
+      <div class="grid-2" id="interGrid">
+        <div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Degree Programs -->
+  <section class="section" style="background:var(--gray-50);" id="degree">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Degree College</div>
+        <h2 class="section-title">Degree <span>Programs</span></h2>
+        <div class="divider"></div>
+        <p class="section-sub">Three-year undergraduate programs affiliated to Osmania University, Hyderabad, recognized for academic rigor and industry relevance.</p>
+      </div>
+      <div class="grid-3" id="degreeGrid">
+        <div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="section" style="background:var(--navy);">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" style="background:rgba(200,150,12,0.15); color:var(--gold-light); border-color:rgba(200,150,12,0.25);">Why Choose BHSRC</div>
+        <h2 class="section-title" style="color:white;">Academic <span>Excellence</span></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="grid-4">
+        ${[
+          {icon:'📚', title:'Experienced Faculty', desc:'Over 120 qualified and experienced teaching staff'},
+          {icon:'🔬', title:'Modern Labs', desc:'Equipped with the latest instruments and technology'},
+          {icon:'📊', title:'Regular Assessments', desc:'Continuous evaluation and feedback for improvement'},
+          {icon:'🏆', title:'Top Results', desc:'Consistently high board exam pass percentages'},
+        ].map(f=>`
+          <div style="background:rgba(255,255,255,0.06); border-radius:var(--radius-lg); padding:28px; text-align:center; border-top:3px solid var(--gold);">
+            <div style="font-size:2.5rem; margin-bottom:12px;">${f.icon}</div>
+            <div style="font-family:var(--font-display); color:var(--gold); margin-bottom:8px;">${f.title}</div>
+            <div style="color:rgba(255,255,255,0.7); font-size:13px;">${f.desc}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="background:var(--gold); padding:48px 0; text-align:center;">
+    <div class="container">
+      <h2 style="font-family:var(--font-display); color:var(--navy); margin-bottom:12px;">Ready to Join Us?</h2>
+      <p style="color:rgba(12,27,51,0.8); margin-bottom:24px;">Admissions open for 2024-25. Apply now for your preferred program.</p>
+      <a href="admissions.html" class="btn btn-navy">Apply for Admission</a>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const icons = {
+      'MPC': '📐', 'BiPC': '🔬', 'MEC': '💹', 'CEC': '📖',
+      'B.Sc': '🧪', 'B.Com': '💼', 'BA': '📜', 'BCA': '💻',
+    };
+    function getIcon(name) {
+      for (const k in icons) { if (name.includes(k)) return icons[k]; }
+      return '🎓';
+    }
+
+    async function pageInit() {
+      const res = await apiFetch('/departments');
+      const depts = res.data || [];
+      const interDepts = depts.filter(d => d.type === 'intermediate');
+      const degreeDepts = depts.filter(d => d.type === 'degree');
+
+      document.getElementById('interGrid').innerHTML = interDepts.length ? interDepts.map(d => `
+        <div class="card fade-in" style="display:grid; grid-template-columns:auto 1fr; gap:0; overflow:hidden;">
+          <div style="background:linear-gradient(180deg,var(--navy),var(--navy-light)); width:80px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:var(--gold);">
+            ${getIcon(d.name)}
+          </div>
+          <div class="card-body">
+            <div class="card-meta">Intermediate • ${d.duration}</div>
+            <h3 class="card-title">${d.name}</h3>
+            <p class="card-text">${d.description || ''}</p>
+            <div style="margin-top:12px; display:flex; gap:16px; font-size:12px; color:var(--gray-500);">
+              <span>📋 ${d.intake} Seats</span>
+              ${d.hod ? `<span>👤 HOD: ${d.hod}</span>` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('') : '<p>Loading departments...</p>';
+
+      document.getElementById('degreeGrid').innerHTML = degreeDepts.length ? degreeDepts.map(d => `
+        <div class="dept-card fade-in">
+          <div class="dept-icon">${getIcon(d.name)}</div>
+          <span class="dept-badge badge-degree">Degree</span>
+          <div class="dept-name">${d.name}</div>
+          <div class="dept-info" style="margin:8px 0;">${d.description || ''}</div>
+          <div style="font-size:12px; color:var(--gray-500); margin-top:8px; display:flex; justify-content:center; gap:16px;">
+            <span>📋 ${d.intake} Seats</span>
+            <span>⏱ ${d.duration}</span>
+          </div>
+          ${d.hod ? `<div style="font-size:12px; color:var(--navy); margin-top:6px;">HOD: ${d.hod}</div>` : ''}
+        </div>
+      `).join('') : '<p>Loading...</p>';
+
+      initScrollAnimation();
+    }
+  </script>
+</body>
+</html>

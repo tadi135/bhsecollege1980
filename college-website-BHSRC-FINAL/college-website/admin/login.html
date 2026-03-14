@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | College Website</title>
+  <link rel="stylesheet" href="css/admin.css">
+  <style>
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; background:linear-gradient(135deg, #060e1d 0%, #0c1b33 50%, #1a3a5c 100%); }
+    .login-wrap { width:100%; max-width:420px; padding:20px; }
+    .login-card { background:white; border-radius:16px; overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,0.4); }
+    .login-head { background:linear-gradient(135deg,var(--navy),var(--navy-light)); padding:32px 32px 24px; text-align:center; }
+    .login-logo { width:64px;height:64px;background:var(--gold);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:var(--navy);margin-bottom:14px; }
+    .login-head h1 { color:white;font-size:18px;font-weight:700;margin-bottom:4px; }
+    .login-head p { color:rgba(255,255,255,0.6);font-size:12px; }
+    .login-body { padding:28px 32px; }
+    .step { display:none; }
+    .step.active { display:block; }
+    .otp-inputs { display:flex; gap:10px; justify-content:center; margin:20px 0; }
+    .otp-inputs input { width:46px;height:54px;text-align:center;font-size:1.4rem;font-weight:700;border:2px solid var(--gray-200);border-radius:10px;outline:none;transition:0.2s;font-family:inherit; }
+    .otp-inputs input:focus { border-color:var(--navy); box-shadow:0 0 0 3px rgba(12,27,51,0.1); }
+    .otp-info { background:var(--gray-50); border-radius:8px; padding:12px 16px; font-size:13px; color:var(--gray-700); text-align:center; margin-bottom:16px; border:1px solid var(--gray-200); }
+    .timer { color:var(--navy); font-weight:700; }
+    .resend-link { color:var(--navy); font-weight:600; cursor:pointer; text-decoration:underline; }
+    .resend-link:disabled { color:var(--gray-400); text-decoration:none; cursor:not-allowed; }
+    .back-link { text-align:center; margin-top:12px; font-size:13px; color:var(--gray-500); }
+    .back-link span { color:var(--navy); cursor:pointer; font-weight:600; text-decoration:underline; }
+    .forgot-link { text-align:right; margin-top:4px; }
+    .forgot-link a { font-size:12px; color:var(--navy); font-weight:600; cursor:pointer; }
+    .success-icon { text-align:center; font-size:4rem; margin-bottom:12px; }
+    .divider-text { display:flex;align-items:center;gap:12px;margin:20px 0;font-size:12px;color:var(--gray-400); }
+    .divider-text::before,.divider-text::after { content:'';flex:1;height:1px;background:var(--gray-200); }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-head">
+        <div class="login-logo">AD</div>
+        <h1>Admin Panel</h1>
+        <p>College Website Management System</p>
+      </div>
+      <div class="login-body">
+
+        <!-- Step 1: Email + Password -->
+        <div class="step active" id="step1">
+          <h2 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--gray-900);">Welcome Back</h2>
+          <p style="font-size:13px;color:var(--gray-500);margin-bottom:20px;">Enter your credentials to receive OTP</p>
+          <form onsubmit="sendOTP(event)">
+            <div class="form-group" style="margin-bottom:14px;">
+              <label class="form-label">Email Address</label>
+              <input type="email" id="loginEmail" class="form-control" placeholder="admin@bhsrccollege.edu.in" required autocomplete="username">
+            </div>
+            <div class="form-group" style="margin-bottom:6px;">
+              <label class="form-label">Password</label>
+              <div style="position:relative;">
+                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password" style="padding-right:40px;">
+                <span onclick="togglePwd('loginPassword')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--gray-400);font-size:16px;">👁</span>
+              </div>
+            </div>
+            <div class="forgot-link"><a onclick="showForgot()">Forgot Password?</a></div>
+            <button type="submit" id="sendOTPBtn" class="topbar-btn btn-primary" style="width:100%;justify-content:center;padding:11px;margin-top:18px;font-size:14px;border-radius:8px;">
+              Send OTP to Email →
+            </button>
+          </form>
+          <p style="text-align:center;font-size:12px;color:var(--gray-400);margin-top:16px;">🔒 OTP will be sent to your registered email</p>
+        </div>
+
+        <!-- Step 2: OTP Verification -->
+        <div class="step" id="step2">
+          <div style="text-align:center;margin-bottom:16px;">
+            <div style="font-size:2.5rem;margin-bottom:8px;">📧</div>
+            <h2 style="font-size:16px;font-weight:700;color:var(--gray-900);">Check Your Email</h2>
+            <p style="font-size:13px;color:var(--gray-500);">Enter the 6-digit OTP sent to</p>
+            <div style="font-weight:700;color:var(--navy);font-size:14px;" id="otpEmailDisplay"></div>
+          </div>
+          <div class="otp-info">
+            ⏱ OTP valid for <span class="timer" id="otpTimer">10:00</span>
+          </div>
+          <div class="otp-inputs" id="otpInputs">
+            <input type="text" maxlength="1" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+            <input type="text" maxlength="1" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+            <input type="text" maxlength="1" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+            <input type="text" maxlength="1" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+            <input type="text" maxlength="1" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+            <input type="text" maxlength="1" oninput="otpInput(this)" onkeydown="otpKey(event,this)">
+          </div>
+          <button onclick="verifyOTP()" id="verifyBtn" class="topbar-btn btn-primary" style="width:100%;justify-content:center;padding:11px;font-size:14px;border-radius:8px;">
+            Verify OTP & Login
+          </button>
+          <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--gray-500);">
+            Didn't receive? <span class="resend-link" id="resendLink" onclick="resendOTP()">Resend OTP</span>
+          </div>
+          <div class="back-link"><span onclick="goBack()">← Change Email/Password</span></div>
+        </div>
+
+        <!-- Step 3: Forgot Password -->
+        <div class="step" id="step3">
+          <h2 style="font-size:16px;font-weight:700;margin-bottom:4px;">Reset Password</h2>
+          <p style="font-size:13px;color:var(--gray-500);margin-bottom:20px;">Enter your admin email to receive reset OTP</p>
+          <form onsubmit="sendResetOTP(event)">
+            <div class="form-group" style="margin-bottom:16px;">
+              <label class="form-label">Admin Email</label>
+              <input type="email" id="resetEmail" class="form-control" placeholder="admin@bhsrccollege.edu.in" required>
+            </div>
+            <button type="submit" class="topbar-btn btn-primary" style="width:100%;justify-content:center;padding:11px;font-size:14px;border-radius:8px;">
+              Send Reset OTP
+            </button>
+          </form>
+          <div class="back-link" style="margin-top:16px;"><span onclick="showStep(1)">← Back to Login</span></div>
+        </div>
+
+        <!-- Step 4: Reset Password OTP -->
+        <div class="step" id="step4">
+          <div style="text-align:center;margin-bottom:16px;">
+            <div style="font-size:2.5rem;margin-bottom:8px;">🔑</div>
+            <h2 style="font-size:15px;font-weight:700;">Enter Reset OTP & New Password</h2>
+          </div>
+          <form onsubmit="doResetPassword(event)">
+            <div class="form-group" style="margin-bottom:14px;">
+              <label class="form-label">OTP Code</label>
+              <input type="text" id="resetOTP" class="form-control" placeholder="6-digit OTP" maxlength="6" required>
+            </div>
+            <div class="form-group" style="margin-bottom:14px;">
+              <label class="form-label">New Password</label>
+              <input type="password" id="newPassword" class="form-control" placeholder="Min 8 characters" required>
+            </div>
+            <div class="form-group" style="margin-bottom:18px;">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter password" required>
+            </div>
+            <button type="submit" class="topbar-btn btn-primary" style="width:100%;justify-content:center;padding:11px;font-size:14px;border-radius:8px;">
+              Reset Password
+            </button>
+          </form>
+          <div class="back-link" style="margin-top:12px;"><span onclick="showStep(3)">← Back</span></div>
+        </div>
+
+        <!-- Step 5: Success -->
+        <div class="step" id="step5">
+          <div class="success-icon">✅</div>
+          <h2 style="text-align:center;font-size:17px;font-weight:700;margin-bottom:8px;">Password Reset Successful!</h2>
+          <p style="text-align:center;font-size:13px;color:var(--gray-500);margin-bottom:20px;">Your password has been updated. You can now login with your new password.</p>
+          <button onclick="showStep(1)" class="topbar-btn btn-primary" style="width:100%;justify-content:center;padding:11px;font-size:14px;border-radius:8px;">Back to Login</button>
+        </div>
+
+      </div>
+    </div>
+    <p style="text-align:center;color:rgba(255,255,255,0.3);font-size:12px;margin-top:16px;">© College Website Admin Panel</p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = (typeof CONFIG !== 'undefined') ? CONFIG.API_BASE : 'http://localhost:3000/api';
+    let timerInterval, currentEmail = '';
+
+    function showStep(n) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+    }
+    function showForgot() { showStep(3); }
+    function goBack() { showStep(1); clearInterval(timerInterval); }
+
+    function toast(msg, type='info') {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = `toast ${type}`;
+      setTimeout(() => t.classList.add('show'), 10);
+      setTimeout(() => t.classList.remove('show'), 4000);
+    }
+
+    function togglePwd(id) {
+      const el = document.getElementById(id);
+      el.type = el.type === 'password' ? 'text' : 'password';
+    }
+
+    function startTimer(seconds = 600) {
+      clearInterval(timerInterval);
+      const el = document.getElementById('otpTimer');
+      timerInterval = setInterval(() => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+        if (--seconds < 0) {
+          clearInterval(timerInterval);
+          el.textContent = 'Expired';
+          el.style.color = 'red';
+        }
+      }, 1000);
+    }
+
+    function otpInput(el) {
+      el.value = el.value.replace(/\D/,'');
+      const inputs = document.querySelectorAll('#otpInputs input');
+      const idx = [...inputs].indexOf(el);
+      if (el.value && idx < inputs.length - 1) inputs[idx + 1].focus();
+      if ([...inputs].every(i => i.value)) verifyOTP();
+    }
+
+    function otpKey(e, el) {
+      const inputs = document.querySelectorAll('#otpInputs input');
+      const idx = [...inputs].indexOf(el);
+      if (e.key === 'Backspace' && !el.value && idx > 0) { inputs[idx - 1].focus(); inputs[idx - 1].value = ''; }
+    }
+
+    async function sendOTP(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('sendOTPBtn');
+      btn.textContent = 'Sending...'; btn.disabled = true;
+
+      const res = await fetch(`${API}/auth/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      }).then(r => r.json()).catch(() => ({ success: false, message: 'Server not reachable' }));
+
+      if (res.success) {
+        currentEmail = email;
+        document.getElementById('otpEmailDisplay').textContent = email;
+        document.querySelectorAll('#otpInputs input').forEach(i => i.value = '');
+        showStep(2);
+        document.querySelector('#otpInputs input').focus();
+        startTimer(600);
+        toast('OTP sent to your email!', 'success');
+      } else {
+        toast(res.message || 'Failed to send OTP', 'error');
+      }
+      btn.textContent = 'Send OTP to Email →'; btn.disabled = false;
+    }
+
+    async function verifyOTP() {
+      const inputs = document.querySelectorAll('#otpInputs input');
+      const otp = [...inputs].map(i => i.value).join('');
+      if (otp.length < 6) { toast('Enter all 6 digits', 'error'); return; }
+
+      const btn = document.getElementById('verifyBtn');
+      btn.textContent = 'Verifying...'; btn.disabled = true;
+
+      const res = await fetch(`${API}/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentEmail, otp })
+      }).then(r => r.json()).catch(() => ({ success: false, message: 'Server error' }));
+
+      if (res.success) {
+        localStorage.setItem('adminToken', res.token);
+        localStorage.setItem('adminName', res.admin.name);
+        localStorage.setItem('adminEmail', res.admin.email);
+        clearInterval(timerInterval);
+        toast('Login successful! Redirecting...', 'success');
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      } else {
+        toast(res.message || 'Invalid OTP', 'error');
+        inputs.forEach(i => { i.value = ''; i.style.borderColor = '#fca5a5'; });
+        inputs[0].focus();
+        setTimeout(() => inputs.forEach(i => i.style.borderColor = ''), 2000);
+      }
+      btn.textContent = 'Verify OTP & Login'; btn.disabled = false;
+    }
+
+    async function resendOTP() {
+      const res = await fetch(`${API}/auth/resend-otp`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentEmail, type: 'login' })
+      }).then(r => r.json()).catch(() => ({ success: false }));
+      if (res.success) { startTimer(600); toast('OTP resent!', 'success'); }
+      else toast('Failed to resend OTP', 'error');
+    }
+
+    async function sendResetOTP(e) {
+      e.preventDefault();
+      const email = document.getElementById('resetEmail').value;
+      const btn = e.target.querySelector('button');
+      btn.textContent = 'Sending...'; btn.disabled = true;
+
+      const res = await fetch(`${API}/auth/forgot-password`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      }).then(r => r.json()).catch(() => ({ success: false }));
+
+      if (res.success) { currentEmail = email; showStep(4); toast('Reset OTP sent!', 'success'); }
+      else toast(res.message || 'Email not found', 'error');
+      btn.textContent = 'Send Reset OTP'; btn.disabled = false;
+    }
+
+    async function doResetPassword(e) {
+      e.preventDefault();
+      const otp = document.getElementById('resetOTP').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+      if (newPassword !== confirm) { toast('Passwords do not match', 'error'); return; }
+      if (newPassword.length < 8) { toast('Password must be at least 8 characters', 'error'); return; }
+
+      const res = await fetch(`${API}/auth/reset-password`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentEmail, otp, newPassword })
+      }).then(r => r.json()).catch(() => ({ success: false }));
+
+      if (res.success) { showStep(5); }
+      else toast(res.message || 'Failed to reset password', 'error');
+    }
+
+    // Auto-redirect if already logged in
+    if (localStorage.getItem('adminToken')) {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
