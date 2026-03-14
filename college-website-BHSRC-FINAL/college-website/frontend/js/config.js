@@ -15,7 +15,7 @@ const CONFIG = (() => {
 
   // Live Render.com backend API
   // ⚠️ After deploying backend to Render, paste your Render URL here
-  const RENDER_API = 'https://bhsrc-college-api.onrender.com';
+  const RENDER_API = 'https://bhsecollege1980.onrender.com';
 
   return {
     API_BASE: isLocal
